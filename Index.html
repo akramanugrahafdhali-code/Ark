@@ -1,1 +1,1977 @@
-# Ark
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WELCOME ARK // DATA CENTER</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#05070a;--line:#16202e;--cyan:#00e5ff;--cyan-dim:#0a8fa3;
+--green:#29ff9b;--red:#ff5c5c;--yellow:#ffcc3d;--num:#0891b2;
+--text:#c9d6e3;--muted:#5b6b7d;--r:12px
+}
+body{
+background:var(--bg);color:var(--text);
+font-family:"SF Mono","Consolas","Courier New",monospace;
+min-height:100vh;padding:24px 16px 60px;
+background-image:
+  linear-gradient(rgba(0,229,255,0.035) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,229,255,0.035) 1px,transparent 1px);
+background-size:32px 32px;
+overflow-x:hidden
+}
+body::before{
+content:"";position:fixed;inset:0;
+background:radial-gradient(circle at 50% 0%,rgba(0,229,255,0.10),transparent 55%);
+pointer-events:none;z-index:0
+}
+.wrap{max-width:820px;margin:0 auto;position:relative;z-index:1}
+.topbar{
+display:flex;justify-content:space-between;align-items:center;
+font-size:11px;letter-spacing:1.5px;color:var(--muted);
+border:1px solid var(--line);background:rgba(11,16,23,0.7);
+padding:10px 16px;border-radius:var(--r);margin-bottom:22px
+}
+.dot{
+display:inline-block;width:7px;height:7px;border-radius:50%;
+background:var(--green);margin-right:6px;
+box-shadow:0 0 8px var(--green);animation:pulse 1.6s infinite
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.header{
+border:1px solid var(--line);
+background:linear-gradient(180deg,rgba(0,229,255,0.05),rgba(11,16,23,0.9));
+border-radius:var(--r);padding:30px 22px;text-align:center;
+position:relative;margin-bottom:22px
+}
+.header::after{
+content:"";position:absolute;top:0;left:0;right:0;height:2px;
+background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+border-radius:var(--r) var(--r) 0 0
+}
+/* ===== CAROUSEL IKON ===== */
+.icon-carousel{
+position:relative;width:100%;height:110px;margin:0 auto 10px;
+overflow:hidden;touch-action:pan-y
+}
+.icon-slide{
+position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+opacity:0;transform:translateX(100%);
+transition:all .4s cubic-bezier(.4,0,.2,1);pointer-events:none
+}
+.icon-slide.active{opacity:1;transform:translateX(0);pointer-events:auto}
+.icon-slide.left{opacity:0;transform:translateX(-100%)}
+.icon-slide.right{opacity:0;transform:translateX(100%)}
+.icon-slide .avatar{margin:0}
+.icon-dots{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
+.icon-dot{
+width:6px;height:6px;border-radius:50%;
+background:rgba(0,229,255,0.25);transition:all .3s ease;cursor:pointer
+}
+.icon-dot.active{background:var(--cyan);box-shadow:0 0 8px var(--cyan);width:20px;border-radius:3px}
+.icon-slide.enc .avatar svg{stroke:#00e5ff}
+.icon-slide.note .avatar svg{stroke:#29ff9b}
+.icon-slide.note .avatar{border-color:rgba(41,255,155,0.5)}
+.icon-slide.lock .avatar svg{stroke:#ffcc3d}
+.icon-slide.lock .avatar{border-color:rgba(255,204,61,0.5)}
+/* ===== AVATAR ===== */
+.avatar{
+width:100px;height:100px;margin:0 auto 18px;
+border-radius:50%;border:2px solid var(--cyan-dim);
+background:radial-gradient(circle at 50% 50%,rgba(0,229,255,0.08),#060a0f 70%);
+display:flex;align-items:center;justify-content:center;
+box-shadow:0 0 24px rgba(0,229,255,0.25);
+position:relative;cursor:pointer;transition:all .25s ease;
+-webkit-tap-highlight-color:transparent
+}
+.avatar:hover{border-color:var(--cyan);box-shadow:0 0 36px rgba(0,229,255,0.5);transform:scale(1.04)}
+.avatar:active{transform:scale(0.97)}
+.avatar::before{
+content:"";position:absolute;inset:-7px;border-radius:50%;
+border:1px dashed rgba(0,229,255,0.3);
+animation:spin 18s linear infinite;pointer-events:none
+}
+.avatar::after{
+content:"";position:absolute;inset:0;border-radius:50%;
+border:2px solid transparent;border-top-color:var(--cyan);
+opacity:.6;animation:spin 3s linear infinite reverse;pointer-events:none
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cpu-icon{
+width:52px;height:52px;display:block;
+filter:drop-shadow(0 0 6px rgba(0,229,255,0.8));
+transition:all .25s ease
+}
+.name{
+font-size:26px;letter-spacing:4px;color:#fff;
+text-shadow:0 0 12px rgba(0,229,255,0.6);margin-bottom:8px
+}
+.name span{color:var(--cyan)}
+.role{font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:16px}
+.bio{font-size:13px;line-height:1.7;max-width:520px;margin:0 auto;opacity:.85}
+/* ===== PANEL ===== */
+.panel{
+border:1px solid var(--line);background:rgba(6,10,15,0.95);
+border-radius:var(--r);overflow:hidden;max-height:0;opacity:0;
+transition:all .45s ease;margin-bottom:0
+}
+.panel.open{max-height:1400px;opacity:1;margin-bottom:22px}
+.panel-head{
+display:flex;justify-content:space-between;align-items:center;
+padding:12px 16px;border-bottom:1px solid var(--line);
+font-size:11px;letter-spacing:2px;color:var(--cyan);
+background:rgba(0,229,255,0.04)
+}
+.panel-head .title{flex:1}
+.panel-head .close{cursor:pointer;color:var(--muted);font-size:14px;padding:2px 6px}
+.panel-head .close:hover{color:var(--red)}
+.stats-grid{
+display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+background:var(--line);border-bottom:1px solid var(--line)
+}
+.stat{background:#060a0f;padding:10px 12px}
+.stat-label{font-size:9px;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px}
+.stat-value{font-size:15px;color:var(--cyan)}
+.bar-mini{height:3px;background:#0d1620;border-radius:2px;margin-top:6px;overflow:hidden}
+.bar-mini>span{display:block;height:100%;background:var(--cyan);transition:width .6s ease}
+.chart-wrap{padding:14px 16px 18px}
+#cpuChart{width:100%;height:150px;display:block;background:#04070a;border:1px solid var(--line);border-radius:6px}
+.chart-legend{display:flex;gap:16px;justify-content:flex-end;font-size:9px;color:var(--muted);padding-top:8px}
+.c-cyan{color:var(--cyan)}.c-green{color:var(--green)}.c-yellow{color:var(--yellow)} /* ===== NETWORK ===== */
+.net-body{padding:16px}
+.net-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.net-stat{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#060a0f}
+.net-stat .k{font-size:9px;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px}
+.net-stat .v{font-size:14px;color:var(--cyan)}
+.net-stat .v.up{color:var(--green)}.net-stat .v.down{color:var(--yellow)}
+.net-ip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;font-size:10px}
+.net-ip .chip{border:1px solid var(--line);border-radius:8px;padding:6px 10px;color:var(--muted);background:#060a0f}
+.net-ip .chip b{color:var(--cyan);font-weight:normal}
+#netChart{width:100%;height:120px;display:block;background:#04070a;border:1px solid var(--line);border-radius:6px}
+.net-node-list{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.net-node{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:#060a0f;font-size:11px}
+.net-node .name{flex:1;color:#fff}
+.net-node .ping{font-size:11px;min-width:70px;text-align:right}
+.ping.good{color:var(--green)}.ping.mid{color:var(--yellow)}.ping.bad{color:var(--red)}
+.net-node .status{font-size:9px;color:var(--green);border:1px solid rgba(41,255,155,0.3);padding:2px 7px;border-radius:5px}
+.net-node .status.off{color:var(--red);border-color:rgba(255,92,92,0.3)}
+/* ===== SERVER RACK ===== */
+.rack-view{padding:20px 18px 22px}
+.rack-head{display:flex;justify-content:space-between;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:12px}
+.rack-head b{color:var(--cyan);font-weight:normal}
+.rack-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
+.unit{border:1px solid var(--line);background:#060a0f;border-radius:8px;padding:12px 8px;text-align:center;position:relative;transition:all .25s ease;cursor:pointer;overflow:hidden}
+.unit::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);box-shadow:0 0 8px var(--green)}
+.unit.warn::before{background:var(--yellow);box-shadow:0 0 8px var(--yellow)}
+.unit.offline::before{background:var(--red);box-shadow:0 0 8px var(--red)}
+.unit-icon{width:36px;height:36px;margin:0 auto 8px}
+.unit-icon svg{width:100%;height:100%;stroke:var(--green);fill:none;stroke-width:1.5}
+.unit.warn .unit-icon svg{stroke:var(--yellow)}
+.unit.offline .unit-icon svg{stroke:var(--red);opacity:.7}
+.unit-name{font-size:9px;color:#fff;margin-bottom:4px}
+.unit-status{font-size:8px;color:var(--green)}
+.unit.warn .unit-status{color:var(--yellow)}
+.unit.offline .unit-status{color:var(--red)}
+.rack-footer{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.rack-footer b{color:var(--cyan);font-weight:normal}
+/* ===== CONSOLE ===== */
+.console-body{padding:14px}
+.console-item{border:1px solid var(--line);border-radius:10px;background:#060a0f;margin-bottom:8px;overflow:hidden}
+.console-item.open{border-color:var(--cyan-dim)}
+.console-header{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;user-select:none}
+.console-header:hover{background:rgba(0,229,255,0.04)}
+.console-ico{width:24px;height:24px;flex-shrink:0}
+.console-ico svg{width:100%;height:100%;stroke:var(--cyan);fill:none;stroke-width:1.6}
+.console-title{flex:1;font-size:12px;letter-spacing:2px;color:#fff}
+.console-arrow{font-size:11px;color:var(--muted);transition:transform .25s}
+.console-item.open .console-arrow{transform:rotate(90deg);color:var(--cyan)}
+.console-content{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.console-item.open .console-content{max-height:900px;border-top:1px solid var(--line)}
+.console-inner{padding:14px 16px;font-size:12px;line-height:1.6}
+.console-row{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.console-row label{font-size:10px;letter-spacing:1.5px;color:var(--muted)}
+.console-row input,.console-row textarea{background:#04070a;border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:12px;padding:8px 10px;border-radius:6px;outline:none;width:100%}
+.console-row input:focus,.console-row textarea:focus{border-color:var(--cyan-dim)}
+.console-row textarea{resize:vertical;min-height:60px}
+.console-btn{display:inline-block;background:rgba(0,229,255,0.1);border:1px solid var(--cyan-dim);color:var(--cyan);font-family:inherit;font-size:11px;letter-spacing:1.5px;padding:8px 16px;border-radius:6px;cursor:pointer;transition:.2s;margin-top:4px}
+.console-btn:hover{background:rgba(0,229,255,0.2)}
+.console-btn.danger{background:rgba(255,92,92,0.1);border-color:rgba(255,92,92,0.5);color:var(--red)}
+.console-note{font-size:10px;color:var(--muted);line-height:1.7;margin-top:6px}
+.console-status{display:inline-block;font-size:10px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;color:var(--green);margin-left:8px}
+.console-status.off{color:var(--muted)}
+.console-status.red{color:var(--red);border-color:rgba(255,92,92,0.4)}
+/* ===== MAP 3D ===== */
+#map3d{width:100%;height:340px;background:radial-gradient(circle at 50% 50%,#071019,#04070a 70%);border:1px solid var(--line);border-radius:8px;display:block;cursor:grab;touch-action:none;margin-top:6px}
+#map3d:active{cursor:grabbing}
+.map-hint{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:6px}
+/* ===== ENCRYPTION TOOL ===== */
+.enc-body{padding:16px}
+.enc-row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.enc-row label{font-size:10px;letter-spacing:1.5px;color:var(--muted)}
+.enc-row select{background:#04070a;border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:12px;padding:8px 10px;border-radius:6px;outline:none;width:100%;cursor:pointer}
+.enc-row select:focus{border-color:var(--cyan-dim)}
+.enc-row textarea{background:#04070a;border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:12px;padding:10px;border-radius:6px;outline:none;width:100%;min-height:80px;resize:vertical}
+.enc-row textarea:focus{border-color:var(--cyan-dim)}
+.enc-btns{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.enc-btns .console-btn{flex:1;min-width:80px;text-align:center}
+.enc-info{font-size:10px;color:var(--muted);line-height:1.6;padding:8px 10px;background:#04070a;border-radius:6px;border:1px solid var(--line);margin-top:8px}
+/* ===== NOTES ===== */
+.notes-body{padding:16px}
+.notes-list{display:flex;flex-direction:column;gap:8px}
+.note-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);background:#060a0f;border-radius:8px;cursor:pointer;transition:all .2s}
+.note-item:hover{border-color:var(--cyan-dim);background:rgba(0,229,255,0.04)}
+.note-item .ni-ico{width:20px;height:20px;flex-shrink:0}
+.note-item .ni-ico svg{width:100%;height:100%;stroke:#29ff9b;fill:none;stroke-width:1.6}
+.note-item .ni-body{flex:1;min-width:0}
+.note-item .ni-title{font-size:13px;color:#fff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-item .ni-preview{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-item .ni-badge{font-size:9px;color:var(--muted);border:1px solid var(--line);padding:2px 6px;border-radius:4px}
+.note-editor{display:none}
+.note-editor.show{display:block}
+.note-editor .ne-head{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.note-editor .ne-back{cursor:pointer;color:var(--cyan);font-size:11px;padding:6px 10px;border:1px solid var(--cyan-dim);border-radius:6px}
+.ne-checklist{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.ne-check-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#04070a;border:1px solid var(--line);border-radius:6px;font-size:12px}
+.ne-check-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--cyan)}
+.ne-check-item .chk-txt{flex:1;outline:none;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:12px}
+.ne-check-item .chk-del{cursor:pointer;color:var(--muted);font-size:14px}
+.ne-check-item .chk-del:hover{color:var(--red)}
+.ne-check-item.done .chk-txt{text-decoration:line-through;opacity:.5}
+.ne-images{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin:10px 0}
+.ne-image{position:relative;aspect-ratio:1;border-radius:8px;border:1px solid var(--line);background:#04070a;overflow:hidden}
+.ne-image img{width:100%;height:100%;object-fit:cover;cursor:pointer}
+.ne-image .img-del{position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.7);border:1px solid var(--red);color:var(--red);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.ne-img-btns{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.ne-img-btns button{font-size:10px;padding:6px 10px} /* ===== TOOLBAR & NODES ===== */
+.sec-title{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:2.5px;color:var(--cyan);margin:26px 0 12px;text-transform:uppercase}
+.sec-title::before{content:"//";color:var(--muted)}
+.sec-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tool-btn{flex:1;min-width:100px;background:rgba(11,16,23,0.75);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:11px;letter-spacing:1.5px;padding:11px 12px;border-radius:10px;cursor:pointer;transition:.2s;text-align:center}
+.tool-btn:hover{border-color:var(--cyan-dim);color:var(--cyan);background:rgba(0,229,255,0.06)}
+.tool-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.1)}
+.rack-list{display:flex;flex-direction:column;gap:10px}
+.node{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);background:rgba(11,16,23,0.75);border-radius:10px;transition:all .22s ease;position:relative;overflow:hidden}
+.node::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cyan-dim)}
+.node:hover{border-color:var(--cyan-dim);background:rgba(0,229,255,0.06);transform:translateX(4px)}
+.node-idx{font-size:11px;color:var(--muted);min-width:26px}
+.node-body{flex:1;min-width:0}
+.node-title{font-size:14px;color:#fff;margin-bottom:3px}
+.node-desc{font-size:11px;color:var(--muted)}
+.node-actions{display:flex;gap:6px}
+.mini-open{font-size:10px;color:var(--cyan);border:1px solid rgba(0,229,255,0.3);background:transparent;padding:5px 9px;border-radius:6px;cursor:pointer;font-family:inherit;text-decoration:none;white-space:nowrap}
+.mini-open:hover{background:rgba(0,229,255,0.15)}
+.mini-open.del{color:var(--red);border-color:rgba(255,92,92,0.4)}
+.add-node-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px dashed var(--cyan-dim);background:rgba(0,229,255,0.03);border-radius:10px;color:var(--cyan);font-family:inherit;font-size:12px;letter-spacing:2px;cursor:pointer;margin-top:10px}
+.add-form{display:none;border:1px solid var(--cyan-dim);background:#060a0f;border-radius:10px;padding:14px;margin-top:10px}
+.add-form.show{display:block}
+.add-form .actions{display:flex;gap:8px;margin-top:8px}
+.footer{margin-top:34px;text-align:center;font-size:10px;letter-spacing:2px;color:var(--muted);line-height:2}
+.blink{color:var(--cyan);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+/* ===== LOCK SCREEN ===== */
+.lock-screen{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;overflow-y:auto}
+.lock-screen.show{display:flex}
+.lock-bg{position:absolute;inset:0;background:rgba(5,7,10,0.88);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:0}
+.lock-content{position:relative;z-index:1;text-align:center;padding:20px;max-width:400px;width:100%}
+.lock-clock{font-size:64px;letter-spacing:4px;color:#fff;text-shadow:0 0 24px rgba(0,229,255,0.5);font-weight:300;line-height:1}
+.lock-date{font-size:14px;letter-spacing:3px;color:var(--muted);margin-top:8px;margin-bottom:40px}
+.lock-circle-wrap{position:relative;width:140px;height:140px;margin:0 auto 24px;cursor:pointer}
+.lock-circle{position:absolute;inset:0;border-radius:50%;border:2px solid var(--cyan-dim);background:radial-gradient(circle at 50% 50%,rgba(0,229,255,0.08),#060a0f 70%);display:flex;align-items:center;justify-content:center;animation:lockPulse 4s ease-in-out infinite;box-shadow:0 0 30px rgba(0,229,255,0.3);transition:border-color .3s}
+.lock-circle::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:1px dashed rgba(0,229,255,0.3);animation:spin 20s linear infinite}
+@keyframes lockPulse{0%,100%{transform:scale(1);box-shadow:0 0 30px rgba(0,229,255,0.30)}50%{transform:scale(1.025);box-shadow:0 0 44px rgba(0,229,255,0.48)}}
+.lock-circle svg{width:64px;height:64px;stroke:var(--cyan);fill:none;stroke-width:1.5;filter:drop-shadow(0 0 10px rgba(0,229,255,0.9));transition:stroke .3s,opacity .2s,transform .2s}
+.error-number{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px;font-weight:300;color:var(--num);text-shadow:0 0 20px rgba(8,145,178,0.7),0 0 40px rgba(8,145,178,0.4);opacity:0;transform:scale(0.4);pointer-events:none}
+.error-number.show{animation:numberPop 1s ease-out forwards}
+@keyframes numberPop{0%{opacity:0;transform:scale(0.3)}20%{opacity:1;transform:scale(1.15)}40%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0.9)}}
+.lock-circle.shrink svg{animation:iconShrink 1s ease-out}
+@keyframes iconShrink{0%{opacity:1;transform:scale(1)}20%{opacity:0;transform:scale(0.4)}100%{opacity:0;transform:scale(0.4)}}
+.lock-circle.shrink svg.return{animation:iconReturn 1s ease-out forwards}
+@keyframes iconReturn{0%{opacity:0;transform:scale(0.4)}70%{opacity:0;transform:scale(0.4)}100%{opacity:1;transform:scale(1)}}
+.lock-circle.red{border-color:var(--red);animation:lockPulseRed .5s ease-in-out infinite;box-shadow:0 0 40px rgba(255,92,92,0.6)}
+.lock-circle.red svg{stroke:var(--red);filter:drop-shadow(0 0 12px rgba(255,92,92,1))}
+@keyframes lockPulseRed{0%,100%{transform:scale(1);box-shadow:0 0 30px rgba(255,92,92,0.5)}50%{transform:scale(1.1);box-shadow:0 0 60px rgba(255,92,92,0.9)}}
+.lock-circle.shake{animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.lock-status-text{font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:20px;min-height:16px}
+.lock-status-text.red{color:var(--red)}
+.code-dots{display:flex;justify-content:center;gap:8px;margin-bottom:20px;min-height:16px}
+.code-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--cyan-dim);transition:all .2s ease}
+.code-dot.filled{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.code-dots.red .code-dot{border-color:rgba(255,92,92,0.6)}
+.code-dots.red .code-dot.filled{background:var(--red);border-color:var(--red)}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:280px;margin:0 auto;opacity:0;max-height:0;overflow:hidden;transition:all .4s ease}
+.numpad.show{opacity:1;max-height:500px}
+.np-btn{background:rgba(11,16,23,0.9);border:1px solid var(--line);color:#fff;font-family:inherit;font-size:22px;font-weight:300;padding:16px 0;border-radius:12px;cursor:pointer;transition:all .15s ease;letter-spacing:1px}
+.np-btn:hover{border-color:var(--cyan-dim);background:rgba(0,229,255,0.08)}
+.np-btn:active{transform:scale(0.94);background:rgba(0,229,255,0.18)}
+.np-btn.empty{background:transparent;border-color:transparent;cursor:default}
+#npSubmit{padding:12px 40px!important;font-size:13px!important;letter-spacing:3px!important;margin-top:14px}
+.lock-note{font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-top:26px;line-height:2}
+.forgot-link{display:none;color:var(--cyan);font-size:11px;letter-spacing:2px;cursor:pointer;margin-top:18px;text-decoration:underline;text-underline-offset:4px}
+.forgot-link.show{display:inline-block}
+.setup-card{background:#0b1017;border:1px solid var(--line);border-radius:14px;padding:28px 24px;max-width:420px;width:100%;position:relative;box-shadow:0 0 50px rgba(0,229,255,0.15)}
+.setup-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);border-radius:14px 14px 0 0}
+.setup-title{font-size:16px;letter-spacing:3px;color:#fff;text-align:center;margin-bottom:8px;text-shadow:0 0 12px rgba(0,229,255,0.5)}
+.setup-sub{font-size:11px;letter-spacing:2px;color:var(--muted);text-align:center;margin-bottom:22px}
+.setup-step{display:none}
+.setup-step.active{display:block}
+.setup-row{margin-bottom:14px}
+.setup-row label{display:block;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:6px}
+.setup-row input{width:100%;background:#04070a;border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:14px;padding:12px 14px;border-radius:8px;outline:none;letter-spacing:2px}
+.setup-row input:focus{border-color:var(--cyan-dim)}
+.setup-btn{width:100%;background:rgba(0,229,255,0.12);border:1px solid var(--cyan-dim);color:var(--cyan);font-family:inherit;font-size:12px;letter-spacing:2px;padding:12px;border-radius:8px;cursor:pointer;margin-top:6px}
+.setup-note{font-size:10px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.7}
+.setup-note b{color:var(--cyan)}
+/* ===== MODAL ===== */
+.modal-back{position:fixed;inset:0;background:rgba(3,5,8,0.88);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:6000;padding:20px}
+.modal-back.show{display:flex}
+.modal{background:#0b1017;border:1px solid var(--line);border-radius:14px;padding:24px;max-width:420px;width:100%;position:relative}
+.modal::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);border-radius:14px 14px 0 0}
+.modal-title{font-size:14px;letter-spacing:3px;color:var(--red);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.modal-title svg{width:22px;height:22px;stroke:var(--red);fill:none;stroke-width:1.8}
+.modal-desc{font-size:12px;line-height:1.7;margin-bottom:16px}
+.modal-desc b{color:var(--cyan)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.modal-btn{font-family:inherit;font-size:11px;letter-spacing:1.5px;padding:10px 18px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--text)}
+.modal-btn:hover{border-color:var(--cyan-dim);color:var(--cyan)}
+.modal-btn.danger{background:rgba(255,92,92,0.15);border-color:rgba(255,92,92,0.6);color:var(--red);font-weight:bold}
+.modal-btn:disabled{opacity:.35;cursor:not-allowed}
+@media(max-width:520px){
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.name{font-size:22px}
+.rack-row{gap:5px}
+.unit{padding:8px 4px}
+.unit-icon{width:26px;height:26px}
+.unit-name{font-size:8px}
+.unit-status{font-size:7px}
+.net-stats{grid-template-columns:1fr}
+.lock-clock{font-size:48px}
+.lock-circle-wrap{width:120px;height:120px}
+.lock-circle svg{width:52px;height:52px}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== LOCK SCREEN ==================== -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-bg"></div>
+
+  <div class="lock-content" id="setupWizard" style="display:none;">
+    <div class="setup-card">
+      <div class="setup-title">INITIALIZE SYSTEM</div>
+      <div class="setup-sub">// SETUP KEAMANAN PERTAMA</div>
+      <div class="setup-step active" id="step1">
+        <div class="setup-row"><label>BUAT PIN (min 3 digit)</label><input type="password" id="setupPin1" inputmode="numeric" placeholder="••••"></div>
+        <div class="setup-row"><label>KONFIRMASI PIN</label><input type="password" id="setupPin2" inputmode="numeric" placeholder="••••"></div>
+        <div class="setup-note">PIN buat buka sistem & enkripsi data.</div>
+        <button class="setup-btn" id="btnSetupStep1">LANJUT →</button>
+      </div>
+      <div class="setup-step" id="step2">
+        <div class="setup-row"><label>PERTANYAAN KEAMANAN</label><input type="text" id="setupQ" placeholder="contoh: Nama guru favoritku?"></div>
+        <div class="setup-row"><label>JAWABAN</label><input type="text" id="setupA" placeholder="jawaban rahasia"></div>
+        <div class="setup-note">Buat recovery kalau lupa PIN. <b>Catat baik-baik!</b></div>
+        <button class="setup-btn" id="btnSetupStep2">SIMPAN & MULAI →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lock-content" id="lockContent" style="display:none;">
+    <div class="lock-clock" id="lockClock">--:--</div>
+    <div class="lock-date" id="lockDate">—</div>
+    <div class="lock-circle-wrap" id="lockCircleWrap">
+      <div class="lock-circle" id="lockCircle">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="6" y="6" width="12" height="12" rx="1.5"/>
+          <rect x="9.5" y="9.5" width="5" height="5" rx="0.5"/>
+          <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>
+        </svg>
+        <div class="error-number" id="errorNumber">1</div>
+      </div>
+    </div>
+    <div class="lock-status-text" id="lockStatusText">TAP TO UNLOCK</div>
+    <div class="code-dots" id="codeDots"></div>
+    <div class="numpad" id="numpad">
+      <button class="np-btn" data-num="1">1</button><button class="np-btn" data-num="2">2</button><button class="np-btn" data-num="3">3</button>
+      <button class="np-btn" data-num="4">4</button><button class="np-btn" data-num="5">5</button><button class="np-btn" data-num="6">6</button>
+      <button class="np-btn" data-num="7">7</button><button class="np-btn" data-num="8">8</button><button class="np-btn" data-num="9">9</button>
+      <button class="np-btn empty"></button><button class="np-btn" data-num="0">0</button><button class="np-btn" id="npBack">⌫</button>
+    </div>
+    <div style="text-align:center;"><button class="np-btn" id="npSubmit">ENTER</button></div>
+    <div class="forgot-link" id="forgotLink">LUPA KODE?</div>
+    <div class="lock-note">ARK · NODE IPAD-01<br><span class="blink">●</span> AES-256 SECURED</div>
+  </div>
+</div>
+
+<!-- ==================== RECOVERY MODAL ==================== -->
+<div class="modal-back" id="recoveryModal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15L19 4M18 5l2 2M15 8l2 2"/></svg>
+      RECOVERY MODE
+    </div>
+    <div class="modal-desc" id="recoveryDesc">Jawab pertanyaan keamanan:</div>
+    <div class="console-row"><label>JAWABAN</label><input type="text" id="recoveryAnswer" placeholder="jawaban..."></div>
+    <div class="console-row" id="newPinRow" style="display:none;"><label>PIN BARU (min 3 digit)</label><input type="password" id="recoveryNewPin" inputmode="numeric" placeholder="••••"></div>
+    <div class="modal-actions">
+      <button class="modal-btn" id="btnCancelRecovery">BATAL</button>
+      <button class="modal-btn danger" id="btnConfirmRecovery">LANJUT</button>
+    </div>
+  </div>
+</div> <!-- ==================== WEB UTAMA ==================== -->
+<div class="wrap" id="mainWrap" style="display:none;">
+  <div class="topbar"><span><span class="dot"></span>SYSTEM ONLINE</span><span id="clock">--:--:--</span></div>
+  
+  <!-- HEADER + CAROUSEL -->
+  <div class="header">
+    <div class="icon-carousel" id="iconCarousel">
+      <!-- SLIDE 1: CPU -->
+      <div class="icon-slide active" data-panel="monitor">
+        <div class="avatar" title="Health Monitor">
+          <svg class="cpu-icon" viewBox="0 0 24 24" stroke="#00e5ff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="6" y="6" width="12" height="12" rx="1.5"/>
+            <rect x="9.5" y="9.5" width="5" height="5" rx="0.5"/>
+            <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>
+          </svg>
+        </div>
+      </div>
+      <!-- SLIDE 2: ENCRYPTION -->
+      <div class="icon-slide enc" data-panel="encryption">
+        <div class="avatar" title="Encryption Tool">
+          <svg class="cpu-icon" viewBox="0 0 24 24" stroke="#00e5ff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <circle cx="12" cy="16" r="1.5" fill="#00e5ff"/>
+          </svg>
+        </div>
+      </div>
+      <!-- SLIDE 3: NOTES -->
+      <div class="icon-slide note" data-panel="notes">
+        <div class="avatar" title="Notes">
+          <svg class="cpu-icon" viewBox="0 0 24 24" stroke="#29ff9b" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6"/>
+            <line x1="9" y1="13" x2="15" y2="13"/>
+            <line x1="9" y1="17" x2="13" y2="17"/>
+          </svg>
+        </div>
+      </div>
+      <!-- SLIDE 4: LOCK -->
+      <div class="icon-slide lock" data-panel="lock">
+        <div class="avatar" title="Lock Now">
+          <svg class="cpu-icon" viewBox="0 0 24 24" stroke="#ffcc3d" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="11" width="16" height="10" rx="2"/>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+            <circle cx="12" cy="16" r="1.5" fill="#ffcc3d"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="icon-dots" id="iconDots">
+      <div class="icon-dot active" data-idx="0"></div>
+      <div class="icon-dot" data-idx="1"></div>
+      <div class="icon-dot" data-idx="2"></div>
+      <div class="icon-dot" data-idx="3"></div>
+    </div>
+    <div class="name">WELCOME <span>ARK</span></div>
+    <div class="role">// PERSONAL DATA CENTER v8.0</div>
+    <div class="bio">Selamat datang di node pribadi. Data terenkripsi AES-256. Satu pintu, satu kendali.</div>
+  </div>
+
+  <!-- HEALTH PANEL -->
+  <div class="panel" id="panel-monitor">
+    <div class="panel-head"><span class="title">&gt; HEALTH MONITOR</span><span class="close" data-close="monitor">✕</span></div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">CPU</div><div class="stat-value" id="statLoad">0%</div><div class="bar-mini"><span id="barLoad"></span></div></div>
+      <div class="stat"><div class="stat-label">MEMORY</div><div class="stat-value" id="statMem">0%</div><div class="bar-mini"><span id="barMem"></span></div></div>
+      <div class="stat"><div class="stat-label">TEMP</div><div class="stat-value" id="statTemp">0°C</div><div class="bar-mini"><span id="barTemp"></span></div></div>
+      <div class="stat"><div class="stat-label">HUMIDITY</div><div class="stat-value" id="statHum">0%</div><div class="bar-mini"><span id="barHum"></span></div></div>
+      <div class="stat"><div class="stat-label">NETWORK</div><div class="stat-value" id="statNet">0</div></div>
+      <div class="stat"><div class="stat-label">POWER</div><div class="stat-value" id="statPow">0</div></div>
+      <div class="stat"><div class="stat-label">FAN</div><div class="stat-value" id="statFan">0</div></div>
+      <div class="stat"><div class="stat-label">UPTIME</div><div class="stat-value" id="statUp">00:00:00</div></div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="cpuChart"></canvas>
+      <div class="chart-legend"><span class="c-cyan">— CPU</span><span class="c-green">— MEM</span><span class="c-yellow">— TEMP</span></div>
+    </div>
+  </div>
+
+  <!-- NETWORK PANEL -->
+  <div class="panel" id="panel-network">
+    <div class="panel-head"><span class="title">&gt; NETWORK</span><span class="close" data-close="network">✕</span></div>
+    <div class="net-body">
+      <div class="net-stats">
+        <div class="net-stat"><div class="k">DOWNLOAD</div><div class="v" id="netDown">0</div></div>
+        <div class="net-stat"><div class="k">UPLOAD</div><div class="v up" id="netUp">0</div></div>
+        <div class="net-stat"><div class="k">LATENCY</div><div class="v down" id="netLat">0</div></div>
+      </div>
+      <div class="net-ip">
+        <span class="chip">IP: <b id="ipLocal">192.168.—</b></span>
+        <span class="chip">GW: <b>10.0.0.1</b></span>
+        <span class="chip">DNS: <b>1.1.1.1</b></span>
+      </div>
+      <canvas id="netChart"></canvas>
+      <div class="net-node-list" id="netNodeList"></div>
+    </div>
+  </div>
+
+  <!-- SERVER PANEL -->
+  <div class="panel" id="panel-server">
+    <div class="panel-head"><span class="title">&gt; SERVER</span><span class="close" data-close="server">✕</span></div>
+    <div class="rack-view">
+      <div class="rack-head"><span>&gt; RACK 01</span><span>ACTIVE: <b id="rackActive">10</b>/10</span></div>
+      <div class="rack-row" id="rackRow1"></div>
+      <div class="rack-row" id="rackRow2"></div>
+      <div class="rack-footer"><span>SYNC: <b>OK</b></span><span>LATENCY: <b>12ms</b></span><span>POWER: <b>NOMINAL</b></span></div>
+    </div>
+  </div>
+
+  <!-- ENCRYPTION TOOL PANEL -->
+  <div class="panel" id="panel-encryption">
+    <div class="panel-head"><span class="title">&gt; ENCRYPTION TOOL</span><span class="close" data-close="encryption">✕</span></div>
+    <div class="enc-body">
+      <div class="enc-row">
+        <label>METODE (50+)</label>
+        <select id="encMethod"></select>
+      </div>
+      <div class="enc-row">
+        <label>INPUT</label>
+        <textarea id="encInput" placeholder="Ketik teks di sini..."></textarea>
+      </div>
+      <div class="enc-btns">
+        <button class="console-btn" id="encEncode">▸ ENCODE</button>
+        <button class="console-btn" id="encDecode">◂ DECODE</button>
+        <button class="console-btn" id="encSwap">⇅ SWAP</button>
+        <button class="console-btn" id="encCopy">⧉ COPY</button>
+        <button class="console-btn danger" id="encClear">✕ CLEAR</button>
+      </div>
+      <div class="enc-row">
+        <label>OUTPUT</label>
+        <textarea id="encOutput" placeholder="Hasil muncul di sini..." readonly></textarea>
+      </div>
+      <div class="enc-info" id="encInfo">Pilih metode, ketik input, klik ENCODE atau DECODE.</div>
+    </div>
+  </div>
+
+  <!-- NOTES PANEL -->
+  <div class="panel" id="panel-notes">
+    <div class="panel-head"><span class="title">&gt; NOTES</span><span class="close" data-close="notes">✕</span></div>
+    <div class="notes-body">
+      <!-- LIST VIEW -->
+      <div id="notesList">
+        <button class="console-btn" id="noteNew" style="width:100%;margin-bottom:10px;">+ CATATAN BARU</button>
+        <div class="notes-list" id="notesContainer"></div>
+      </div>
+      <!-- EDITOR VIEW -->
+      <div class="note-editor" id="noteEditor">
+        <div class="ne-head">
+          <span class="ne-back" id="noteBack">← KEMBALI</span>
+          <button class="console-btn danger" id="noteDelete" style="margin-left:auto;font-size:10px;padding:6px 12px;">🗑 HAPUS</button>
+          <button class="console-btn" id="noteSave" style="font-size:10px;padding:6px 12px;">✓ SIMPAN</button>
+        </div>
+        <div class="console-row">
+          <label>JUDUL</label>
+          <input type="text" id="noteTitle" placeholder="Judul catatan...">
+        </div>
+        <div class="console-row">
+          <label>ISI</label>
+          <textarea id="noteBody" placeholder="Tulis catatan di sini..." style="min-height:120px;"></textarea>
+        </div>
+        <div class="console-row">
+          <label>CHECKLIST</label>
+          <div class="ne-checklist" id="noteChecklist"></div>
+          <button class="console-btn" id="noteAddCheck" style="font-size:10px;padding:6px 12px;">+ TAMBAH ITEM</button>
+        </div>
+        <div class="console-row">
+          <label>GAMBAR</label>
+          <div class="ne-images" id="noteImages"></div>
+          <div class="ne-img-btns">
+            <input type="file" id="noteFileInput" accept="image/*" style="display:none">
+            <button class="console-btn" id="noteImgUpload" style="font-size:10px;padding:6px 12px;">📷 UPLOAD</button>
+            <button class="console-btn" id="noteImgUrl" style="font-size:10px;padding:6px 12px;">🔗 DARI URL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONSOLE PANEL -->
+  <div class="panel" id="panel-console">
+    <div class="panel-head"><span class="title">&gt; CONSOLE</span><span class="close" data-close="console">✕</span></div>
+    <div class="console-body">
+      <div class="console-item" data-key="lock">
+        <div class="console-header"><span class="console-ico"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="console-title">KUNCI SISTEM</span><span class="console-arrow">▶</span></div>
+        <div class="console-content"><div class="console-inner">
+          <button class="console-btn danger" id="btnLockNow">🔒 LOCK NOW</button>
+          <div class="console-row" style="margin-top:14px;"><label>AUTO-LOCK (menit, 0=off)</label><input type="text" id="autoLockMin" placeholder="2"></div>
+          <button class="console-btn" id="btnSaveAutoLock">SIMPAN</button>
+        </div></div>
+      </div>
+      <div class="console-item" data-key="password">
+        <div class="console-header"><span class="console-ico"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15L19 4M18 5l2 2M15 8l2 2"/></svg></span><span class="console-title">GANTI PIN</span><span class="console-arrow">▶</span></div>
+        <div class="console-content"><div class="console-inner">
+          <div class="console-row"><label>PIN LAMA</label><input type="password" id="pwOld" inputmode="numeric" placeholder="••••"></div>
+          <div class="console-row"><label>PIN BARU</label><input type="password" id="pwNew" inputmode="numeric" placeholder="••••"></div>
+          <button class="console-btn" id="btnSavePw">SIMPAN PIN</button>
+          <div class="console-note">PIN baru = kunci enkripsi baru. Data akan di-re-encrypt.</div>
+        </div></div>
+      </div>
+      <div class="console-item" data-key="map">
+        <div class="console-header"><span class="console-ico"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v20M3 7l9 5 9-5M3 17l9-5 9 5"/></svg></span><span class="console-title">MAP 3D</span><span class="console-arrow">▶</span></div>
+        <div class="console-content"><div class="console-inner">
+          <canvas id="map3d"></canvas>
+          <div class="map-hint"><span>🖱️ DRAG = PUTAR</span><span>📜 SCROLL = ZOOM</span></div>
+        </div></div>
+      </div>
+      <div class="console-item" data-key="security">
+        <div class="console-header"><span class="console-ico"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="console-title">SECURITY</span><span class="console-arrow">▶</span></div>
+        <div class="console-content"><div class="console-inner">
+          <div class="console-row"><label>ENCRYPTION</label><div><span class="console-status">AES-256-GCM</span></div></div>
+          <div class="console-row"><label>KEY DERIVATION</label><div><span class="console-status">PBKDF2 · 100K</span></div></div>
+          <div class="console-row"><label>STORAGE</label><div><span class="console-status">Encrypted</span></div></div>
+          <div class="console-row"><label>LOGIN</label><div><span class="console-status" id="loginCount">0x</span></div></div>
+          <div class="console-row"><label>LAST LOGIN</label><div><span class="console-status" id="lastLogin">—</span></div></div>
+          <div class="console-row"><label>FAILED</label><div><span class="console-status off" id="failCount">0x</span></div></div>
+        </div></div>
+      </div>
+      <div class="console-item" data-key="backup">
+        <div class="console-header"><span class="console-ico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><span class="console-title">BACKUP & RESTORE</span><span class="console-arrow">▶</span></div>
+        <div class="console-content"><div class="console-inner">
+          <button class="console-btn" id="btnBackup" style="width:100%;margin-bottom:8px;">⬇ EXPORT .ark FILE</button>
+          <input type="file" id="restoreFile" accept=".ark,.json" style="display:none">
+          <button class="console-btn" id="btnRestore" style="width:100%;">⬆ RESTORE .ark FILE</button>
+          <div class="console-note">File backup berisi data terenkripsi. Butuh PIN yang sama untuk buka.</div>
+        </div></div>
+      </div>
+      <div class="console-item" data-key="reset">
+        <div class="console-header"><span class="console-ico"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></span><span class="console-title">RESET DATA</span><span class="console-arrow">▶</span></div>
+        <div class="console-content"><div class="console-inner">
+          <div class="console-note">Wipe semua data. Sistem kembali ke setup awal.</div>
+          <button class="console-btn danger" id="btnReset">⚠ WIPE ALL DATA</button>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="sec-title">TERMINAL TOOLS</div>
+  <div class="toolbar">
+    <button class="tool-btn" id="toolNetwork">◈ NETWORK</button>
+    <button class="tool-btn" id="toolServer">◎ SERVER</button>
+    <button class="tool-btn" id="toolConsole">▣ CONSOLE</button>
+  </div>
+
+  <!-- ACCESS NODES -->
+  <div class="sec-title">ACCESS NODES</div>
+  <div class="rack-list" id="rackList"></div>
+  <div class="add-node-btn" id="addNodeBtn">+ ADD NODE</div>
+  <div class="add-form" id="addForm">
+    <div class="console-row"><label>NAMA</label><input type="text" id="addName" placeholder="contoh: Facebook"></div>
+    <div class="console-row"><label>DESKRIPSI</label><input type="text" id="addDesc" placeholder="media sosial"></div>
+    <div class="console-row"><label>URL</label><input type="text" id="addUrl" placeholder="facebook.com"></div>
+    <div class="actions">
+      <button class="console-btn" id="addSave">SIMPAN</button>
+      <button class="console-btn danger" id="addCancel">BATAL</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>WELCOME ARK &copy; <span id="year"></span></div>
+    <div>UPTIME: <span class="blink">●</span> STABLE | NODE: IPAD-01 | AES-256</div>
+  </div>
+</div>
+
+<!-- RESET MODAL -->
+<div class="modal-back" id="resetModal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      WIPE ALL DATA
+    </div>
+    <div class="modal-desc">Semua data akan <b>DIHAPUS PERMANEN</b>.<br>Sistem kembali ke setup awal.</div>
+    <div class="modal-actions">
+      <button class="modal-btn" id="btnCancelReset">BATAL</button>
+      <button class="modal-btn danger" id="btnConfirmReset" disabled>SETUJU (5)</button>
+    </div>
+  </div>
+</div> <script>
+/* ============================================================
+   ARK DATA CENTER v8.0 — AES-256-GCM Encrypted
+   ============================================================ */
+const DATA_VERSION = 1;
+const DEFAULT_NODES = [
+  {id:"google",title:"Google",desc:"mesin pencari",url:"https://www.google.com",status:"ONLINE"},
+  {id:"github",title:"GitHub",desc:"repositori kode",url:"https://github.com",status:"ONLINE"},
+  {id:"deepseek",title:"DeepSeek",desc:"asisten AI",url:"https://chat.deepseek.com",status:"ONLINE"},
+  {id:"toco",title:"Toco",desc:"platform toco",url:"https://toco.id",status:"ONLINE"},
+  {id:"wikipedia",title:"Wikipedia",desc:"ensiklopedia",url:"https://www.wikipedia.org",status:"ONLINE"},
+  {id:"reddit",title:"Reddit",desc:"forum",url:"https://www.reddit.com",status:"ONLINE"}
+];
+const LS = {
+  vault:'ark_vault_enc', pinHash:'ark_ph', question:'ark_q', answerHash:'ark_ah',
+  loginCount:'ark_lc', lastLogin:'ark_ll', failCount:'ark_fc', autoLock:'ark_al'
+};
+
+function byId(id){ return document.getElementById(id) }
+function lsGet(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:v }catch(e){ return d } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v) }catch(e){} }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+function safeUrl(value){
+  try{
+    const url=new URL(String(value));
+    return /^https?:$/.test(url.protocol) ? url.href : '#';
+  }catch(e){ return '#'; }
+}
+
+async function hashStr(str){
+  const buf=new TextEncoder().encode(str);
+  const hb=await crypto.subtle.digest('SHA-256',buf);
+  return Array.from(new Uint8Array(hb)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+/* ===== AES-256-GCM ===== */
+async function deriveKey(pin, salt){
+  const enc = new TextEncoder();
+  const keyMat = await crypto.subtle.importKey('raw', enc.encode(pin), {name:'PBKDF2'}, false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2', salt, iterations:100000, hash:'SHA-256'},
+    keyMat,
+    {name:'AES-GCM', length:256},
+    false,
+    ['encrypt','decrypt']
+  );
+}
+
+async function encryptData(obj, pin){
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(pin, salt);
+  const enc = new TextEncoder();
+  const cipher = await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, enc.encode(JSON.stringify(obj)));
+  return {
+    salt: Array.from(salt),
+    iv: Array.from(iv),
+    data: Array.from(new Uint8Array(cipher))
+  };
+}
+
+async function decryptData(store, pin){
+  const salt = new Uint8Array(store.salt);
+  const iv = new Uint8Array(store.iv);
+  const data = new Uint8Array(store.data);
+  const key = await deriveKey(pin, salt);
+  const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, data);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+/* ===== VAULT ===== */
+let vaultData = {
+  nodes: [...DEFAULT_NODES.map(n=>({...n,custom:false}))],
+  notes: [],
+  logs: [],
+  version: DATA_VERSION
+};
+let currentPin = '';
+let vaultLocked = true;
+let unlocked = false;
+let failCount = 0;
+let lockedUntil = 0;
+let isAnimating = false;
+let circleClicked = false;
+let autoLockTimer = null;
+let monitorTimer = null, netTimer = null, mapLoop = null, mapActive = false;
+let dragging=false, lastX=0, lastY=0, mapAngle=0.6, mapTilt=0.35, mapZoom=1, lastTouchDist=0;
+const startTime = Date.now();
+let cpuData=[], memData=[], tempData=[], lastCpu=35, lastMem=45, lastTemp=45, lastHum=40;
+const MAX_POINTS=60;
+let netDownData=[], netUpData=[], lastNetDown=45, lastNetUp=20;
+const NET_MAX=60;
+
+/* ===== SAVE VAULT (encrypt + simpan) ===== */
+async function saveVault(){
+  if(!currentPin) return;
+  try{
+    const enc = await encryptData(vaultData, currentPin);
+    lsSet(LS.vault, JSON.stringify(enc));
+  }catch(e){ console.error('Save vault gagal:', e) }
+}
+
+/* ===== LOAD VAULT (decrypt) ===== */
+async function loadVault(pin){
+  const raw = lsGet(LS.vault, '');
+  if(!raw) return null;
+  try{
+    const store = JSON.parse(raw);
+    const data = await decryptData(store, pin);
+    return data;
+  }catch(e){ return null }
+}
+
+/* ===== CLOCK ===== */
+function updateLockClock(){
+  const lc=byId('lockClock'), ld=byId('lockDate');
+  if(!lc||!ld) return;
+  const d=new Date(), p=x=>String(x).padStart(2,'0');
+  lc.textContent=`${p(d.getHours())}:${p(d.getMinutes())}`;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  ld.textContent=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+}
+updateLockClock(); setInterval(updateLockClock,1000);
+
+function tick(){
+  const el=byId('clock'); if(!el) return;
+  const d=new Date(), p=x=>String(x).padStart(2,'0');
+  el.textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+tick(); setInterval(tick,1000);
+const yearEl=byId('year'); if(yearEl) yearEl.textContent=new Date().getFullYear();
+
+/* ===== LOCK INIT ===== */
+function initLock(){
+  const ph=lsGet(LS.pinHash,'');
+  const sw=byId('setupWizard'), lc=byId('lockContent'), ls=byId('lockScreen'), mw=byId('mainWrap');
+  if(!ls) return;
+  if(!ph){ if(sw)sw.style.display='block'; if(lc)lc.style.display='none' }
+  else { if(sw)sw.style.display='none'; if(lc)lc.style.display='block'; renderDots(0) }
+  ls.classList.add('show');
+  if(mw) mw.style.display='none';
+}
+
+/* ===== SETUP WIZARD ===== */
+const btnS1=byId('btnSetupStep1');
+if(btnS1) btnS1.addEventListener('click',()=>{
+  const p1=byId('setupPin1').value.trim();
+  const p2=byId('setupPin2').value.trim();
+  if(p1.length<3){ alert('PIN minimal 3 digit'); return }
+  if(!/^\d+$/.test(p1)){ alert('PIN hanya angka'); return }
+  if(p1!==p2){ alert('Konfirmasi tidak cocok'); return }
+  byId('step1').classList.remove('active');
+  byId('step2').classList.add('active');
+  window._tempPin=p1;
+});
+
+const btnS2=byId('btnSetupStep2');
+if(btnS2) btnS2.addEventListener('click',async()=>{
+  const q=byId('setupQ').value.trim();
+  const a=byId('setupA').value.trim();
+  if(!q||!a){ alert('Isi semua'); return }
+  const ph=await hashStr('ARK_'+window._tempPin);
+  const ah=await hashStr('ARK_'+a.toLowerCase());
+  lsSet(LS.pinHash,ph); lsSet(LS.question,q); lsSet(LS.answerHash,ah);
+  lsSet(LS.loginCount,'0'); lsSet(LS.failCount,'0'); lsSet(LS.autoLock,'2');
+  currentPin = window._tempPin;
+  vaultData = {
+    nodes: DEFAULT_NODES.map(n=>({...n,custom:false})),
+    notes: [], logs: [], version: DATA_VERSION
+  };
+  await saveVault();
+  byId('lockScreen').classList.remove('show');
+  byId('mainWrap').style.display='block';
+  unlocked = true;
+  onUnlock();
+  startAutoLock();
+});
+
+/* ===== LOCK SCREEN ===== */
+const lcw=byId('lockCircleWrap');
+if(lcw) lcw.addEventListener('click',()=>{
+  if(lockedUntil>Date.now()||isAnimating||circleClicked) return;
+  circleClicked=true;
+  byId('numpad').classList.add('show');
+  byId('lockStatusText').textContent='ENTER YOUR CODE';
+  byId('lockStatusText').classList.remove('red');
+  currentPin=''; renderDots(0);
+});
+
+document.querySelectorAll('.np-btn[data-num]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(lockedUntil>Date.now()||isAnimating) return;
+    if(currentPin.length>=20) return;
+    currentPin+=btn.dataset.num;
+    renderDots(currentPin.length);
+  });
+});
+const npb=byId('npBack');
+if(npb) npb.addEventListener('click',()=>{
+  if(lockedUntil>Date.now()||isAnimating) return;
+  currentPin=currentPin.slice(0,-1);
+  renderDots(currentPin.length);
+});
+const nps=byId('npSubmit');
+if(nps) nps.addEventListener('click',()=>{
+  if(lockedUntil>Date.now()||isAnimating) return;
+  if(currentPin.length<3) return;
+  tryPin();
+});
+
+function renderDots(len){
+  const cd=byId('codeDots'); if(!cd) return;
+  const total=Math.max(3,len);
+  cd.innerHTML='';
+  for(let i=0;i<total;i++){
+    const d=document.createElement('div');
+    d.className='code-dot'+(i<len?' filled':'');
+    cd.appendChild(d);
+  }
+}
+
+async function tryPin(){
+  const ph=lsGet(LS.pinHash,'');
+  const ih=await hashStr('ARK_'+currentPin);
+  if(ih===ph){
+    // Coba decrypt vault
+    const data = await loadVault(currentPin);
+    if(data){
+      vaultData = data;
+      if(!vaultData.nodes) vaultData.nodes = DEFAULT_NODES.map(n=>({...n,custom:false}));
+      if(!vaultData.notes) vaultData.notes = [];
+      if(!vaultData.logs) vaultData.logs = [];
+    } else {
+      // Gak bisa decrypt (mungkin format lama), reset data
+      vaultData = {
+        nodes: DEFAULT_NODES.map(n=>({...n,custom:false})),
+        notes: [], logs: [], version: DATA_VERSION
+      };
+      await saveVault();
+    }
+    failCount=0;
+    byId('numpad').classList.remove('show');
+    lsSet(LS.failCount,'0');
+    const cnt=parseInt(lsGet(LS.loginCount,'0'),10)+1;
+    lsSet(LS.loginCount,String(cnt));
+    lsSet(LS.lastLogin,new Date().toLocaleString('id-ID'));
+    byId('lockScreen').classList.remove('show');
+    byId('mainWrap').style.display='block';
+    byId('forgotLink').classList.remove('show');
+    unlocked = true;
+    renderDots(0);
+    onUnlock();
+    startAutoLock();
+  } else {
+    failCount++;
+    currentPin=''; renderDots(0);
+    byId('numpad').classList.remove('show');
+    if(failCount>=3){
+      playErrorAnimation(failCount,()=>startLockout());
+    } else {
+      playErrorAnimation(failCount,()=>{
+        byId('lockStatusText').textContent='TAP TO UNLOCK';
+        circleClicked=false;
+      });
+    }
+  }
+}
+
+function playErrorAnimation(num,onDone){
+  isAnimating=true;
+  const en=byId('errorNumber'), lc=byId('lockCircle'), lcw=byId('lockCircleWrap');
+  if(!en||!lc){ isAnimating=false; if(onDone)onDone(); return }
+  en.textContent=num;
+  lc.classList.add('shrink');
+  const svg=lc.querySelector('svg');
+  if(svg) svg.classList.add('return');
+  en.classList.remove('show');
+  void en.offsetWidth;
+  en.classList.add('show');
+  if(lcw) lcw.classList.add('shake');
+  setTimeout(()=>{
+    lc.classList.remove('shrink');
+    if(svg) svg.classList.remove('return');
+    en.classList.remove('show');
+    if(lcw) lcw.classList.remove('shake');
+    isAnimating=false;
+    if(onDone) onDone();
+  },1050);
+}
+
+function startLockout(){
+  lockedUntil=Date.now()+30000;
+  const lc=byId('lockCircle'), st=byId('lockStatusText'), cd=byId('codeDots');
+  if(lc) lc.classList.add('red');
+  if(st){ st.textContent='SYSTEM LOCKDOWN'; st.classList.add('red') }
+  const np=byId('numpad'); if(np) np.classList.remove('show');
+  const forgot=byId('forgotLink'); if(forgot) forgot.classList.add('show');
+  if(cd) cd.classList.add('red');
+  lsSet(LS.failCount,String(failCount));
+  setTimeout(()=>{
+    lockedUntil=0; failCount=0;
+    if(lc) lc.classList.remove('red');
+    if(cd) cd.classList.remove('red');
+    if(st){ st.textContent='TAP TO UNLOCK'; st.classList.remove('red') }
+    circleClicked=false; currentPin=''; renderDots(0);
+    lsSet(LS.failCount,'0');
+  },30000);
+}
+
+/* ===== ON UNLOCK ===== */
+function onUnlock(){
+  renderNodes(); renderNetNodes(); renderRack();
+  renderNotes(); loadConsoleSettings(); loadSecurityInfo();
+} /* ===== RENDER NODES ===== */
+function renderNodes(){
+  const list=byId('rackList'); if(!list) return;
+  list.innerHTML='';
+  vaultData.nodes.forEach((n,i)=>{
+    const el=document.createElement('div');
+    el.className='node';
+    el.innerHTML=`<span class="node-idx">${String(i+1).padStart(2,'0')}</span>
+      <span class="node-body"><span class="node-title">${esc(n.title)}</span><br><span class="node-desc">${esc(n.desc)}</span></span>
+      <span class="node-actions"><button class="mini-open" data-title="${esc(n.title)}">NODE</button>
+      <a class="mini-open" href="${esc(safeUrl(n.url))}" target="_blank" rel="noopener">↗</a>
+      ${n.custom?`<button class="mini-open del" data-del="${n.id}">🗑</button>`:''}</span>`;
+    list.appendChild(el);
+  });
+  list.querySelectorAll('.mini-open[data-title]').forEach(b=>{
+    b.addEventListener('click',e=>{ e.stopPropagation(); openPanel('server') });
+  });
+  list.querySelectorAll('[data-del]').forEach(b=>{
+    b.addEventListener('click',async e=>{
+      e.stopPropagation();
+      vaultData.nodes=vaultData.nodes.filter(n=>n.id!==b.dataset.del);
+      await saveVault(); renderNodes(); renderNetNodes();
+    });
+  });
+}
+
+/* ===== SERVER RACK ===== */
+const UNITS=[
+  {name:"UNIT-01",status:"online"},{name:"UNIT-02",status:"online"},
+  {name:"UNIT-03",status:"online"},{name:"UNIT-04",status:"warn"},
+  {name:"UNIT-05",status:"online"},{name:"UNIT-06",status:"online"},
+  {name:"UNIT-07",status:"online"},{name:"UNIT-08",status:"offline"},
+  {name:"UNIT-09",status:"online"},{name:"UNIT-10",status:"online"}
+];
+const SI=`<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.9"/><circle cx="7" cy="17" r="0.9"/><circle cx="17" cy="7" r="0.9"/><circle cx="17" cy="17" r="0.9"/></svg>`;
+function statusLabel(s){ return s==='online'?'● ONLINE':s==='warn'?'● WARN':'● OFFLINE' }
+function renderRack(){
+  const r1=byId('rackRow1'), r2=byId('rackRow2'); if(!r1||!r2) return;
+  r1.innerHTML=''; r2.innerHTML='';
+  UNITS.forEach((u,i)=>{
+    const c=document.createElement('div');
+    c.className='unit'+(u.status==='warn'?' warn':u.status==='offline'?' offline':'');
+    c.innerHTML=`<div class="unit-icon">${SI}</div><div class="unit-name">${u.name}</div><div class="unit-status">${statusLabel(u.status)}</div>`;
+    (i<5?r1:r2).appendChild(c);
+  });
+  const a=byId('rackActive');
+  if(a) a.textContent=UNITS.filter(u=>u.status==='online').length;
+}
+
+/* ===== PANEL MANAGER ===== */
+const panels={
+  monitor:byId('panel-monitor'), network:byId('panel-network'),
+  server:byId('panel-server'), console:byId('panel-console'),
+  encryption:byId('panel-encryption'), notes:byId('panel-notes')
+};
+const toolBtns={
+  network:byId('toolNetwork'), server:byId('toolServer'), console:byId('toolConsole')
+};
+
+function openPanel(name){
+  Object.keys(panels).forEach(k=>{
+    if(!panels[k]) return;
+    if(k===name){ panels[k].classList.add('open'); if(toolBtns[k]) toolBtns[k].classList.add('active') }
+    else { panels[k].classList.remove('open'); if(toolBtns[k]) toolBtns[k].classList.remove('active') }
+  });
+  if(name==='monitor') startMonitor(); else stopMonitor();
+  if(name==='network') startNet(); else stopNet();
+  if(name==='server') setTimeout(resizeCanvas,460);
+  if(name==='console') setTimeout(()=>{ resizeMap(); if(mapActive) startMapLoop() },500);
+  if(name!=='console') stopMapLoop();
+  setTimeout(()=>{ if(panels[name]) panels[name].scrollIntoView({behavior:'smooth',block:'start'}) },250);
+}
+function closePanel(name){
+  if(panels[name]) panels[name].classList.remove('open');
+  if(toolBtns[name]) toolBtns[name].classList.remove('active');
+  if(name==='monitor') stopMonitor();
+  if(name==='network') stopNet();
+  if(name==='console') stopMapLoop();
+}
+function togglePanel(name){ panels[name].classList.contains('open')?closePanel(name):openPanel(name) }
+
+if(toolBtns.network) toolBtns.network.addEventListener('click',()=>togglePanel('network'));
+if(toolBtns.server) toolBtns.server.addEventListener('click',()=>togglePanel('server'));
+if(toolBtns.console) toolBtns.console.addEventListener('click',()=>togglePanel('console'));
+document.querySelectorAll('[data-close]').forEach(el=>{
+  el.addEventListener('click',()=>closePanel(el.dataset.close));
+});
+document.querySelectorAll('.console-item').forEach(item=>{
+  const h=item.querySelector('.console-header');
+  if(!h) return;
+  h.addEventListener('click',()=>{
+    item.classList.toggle('open');
+    if(item.classList.contains('open')&&item.dataset.key==='map'){
+      setTimeout(()=>{ resizeMap(); if(mapActive) startMapLoop() },380);
+    }
+  });
+});
+
+/* ===== ICON CAROUSEL ===== */
+(function initCarousel(){
+  const carousel=byId('iconCarousel');
+  const dots=byId('iconDots');
+  if(!carousel||!dots) return;
+  const slides=carousel.querySelectorAll('.icon-slide');
+  const dotEls=dots.querySelectorAll('.icon-dot');
+  let current=0;
+  let startX=0, startY=0, isDragging=false;
+  const SWIPE_THRESHOLD=50;
+
+  function goTo(idx){
+    if(idx<0) idx=slides.length-1;
+    if(idx>=slides.length) idx=0;
+    slides.forEach((s,i)=>{
+      s.classList.remove('active','left','right');
+      if(i===idx) s.classList.add('active');
+      else if(i<idx) s.classList.add('left');
+      else s.classList.add('right');
+    });
+    dotEls.forEach((d,i)=>{ d.classList.toggle('active', i===idx) });
+    current=idx;
+  }
+
+  carousel.addEventListener('touchstart',e=>{
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    isDragging=true;
+  },{passive:true});
+  carousel.addEventListener('touchend',e=>{
+    if(!isDragging) return;
+    isDragging=false;
+    const dx=e.changedTouches[0].clientX-startX;
+    const dy=e.changedTouches[0].clientY-startY;
+    if(Math.abs(dx)<SWIPE_THRESHOLD) return;
+    if(Math.abs(dy)>Math.abs(dx)) return;
+    if(dx<0) goTo(current+1);
+    else goTo(current-1);
+  },{passive:true});
+
+  let mouseDown=false, mouseStartX=0;
+  carousel.addEventListener('mousedown',e=>{ mouseDown=true; mouseStartX=e.clientX });
+  window.addEventListener('mouseup',e=>{
+    if(!mouseDown) return;
+    mouseDown=false;
+    const dx=e.clientX-mouseStartX;
+    if(Math.abs(dx)<SWIPE_THRESHOLD) return;
+    if(dx<0) goTo(current+1);
+    else goTo(current-1);
+  });
+
+  slides.forEach((slide,i)=>{
+    const av=slide.querySelector('.avatar');
+    if(av) av.addEventListener('click',()=>{
+      const panel=slide.dataset.panel;
+      if(panel==='lock'){ lockNow(); }
+      else if(panel==='monitor'){ openPanel('monitor'); }
+      else if(panel==='encryption'){ openPanel('encryption'); }
+      else if(panel==='notes'){ openPanel('notes'); }
+    });
+  });
+  dotEls.forEach((d,i)=>{ d.addEventListener('click',()=>goTo(i)) });
+})();
+
+/* ===== HEALTH MONITOR ===== */
+const canvas=byId('cpuChart');
+const ctx=canvas?canvas.getContext('2d'):null;
+function resizeCanvas(){
+  if(!canvas||!ctx) return;
+  const dpr=window.devicePixelRatio||1, rect=canvas.getBoundingClientRect();
+  if(rect.width===0) return;
+  canvas.width=rect.width*dpr; canvas.height=rect.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0); drawChart();
+}
+function walk(v,mn,mx,s){ return Math.max(mn,Math.min(mx,v+(Math.random()-0.5)*s)) }
+function drawChart(){
+  if(!canvas||!ctx) return;
+  const rect=canvas.getBoundingClientRect(), W=rect.width, H=rect.height;
+  if(W===0) return;
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='rgba(0,229,255,0.08)'; ctx.lineWidth=1;
+  for(let i=1;i<4;i++){ const y=(H/4)*i; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke() }
+  if(cpuData.length<2) return;
+  const stepX=W/(MAX_POINTS-1), toY=v=>H-(v/100)*H;
+  function line(data,color,fillTop){
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,fillTop); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.beginPath(); ctx.moveTo(0,H);
+    data.forEach((v,i)=>ctx.lineTo(i*stepX,toY(v)));
+    ctx.lineTo((data.length-1)*stepX,H); ctx.closePath();
+    ctx.fillStyle=g; ctx.fill();
+    ctx.beginPath();
+    data.forEach((v,i)=>{ const x=i*stepX,y=toY(v); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y) });
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.shadowColor=color; ctx.shadowBlur=8;
+    ctx.stroke(); ctx.shadowBlur=0;
+  }
+  line(memData,'#29ff9b','rgba(41,255,155,0.22)');
+  line(tempData,'#ffcc3d','rgba(255,204,61,0.18)');
+  line(cpuData,'#00e5ff','rgba(0,229,255,0.28)');
+}
+function pushSample(){
+  lastCpu=walk(lastCpu,8,95,22); lastMem=walk(lastMem,20,88,12);
+  lastTemp=walk(lastTemp,38,78,6); lastHum=walk(lastHum,30,70,4);
+  cpuData.push(lastCpu); memData.push(lastMem); tempData.push((lastTemp-30)*2);
+  if(cpuData.length>MAX_POINTS) cpuData.shift();
+  if(memData.length>MAX_POINTS) memData.shift();
+  if(tempData.length>MAX_POINTS) tempData.shift();
+  const s=id=>byId(id);
+  if(s('statLoad')) s('statLoad').textContent=lastCpu.toFixed(0)+'%';
+  if(s('statMem'))  s('statMem').textContent=lastMem.toFixed(0)+'%';
+  if(s('statTemp')) s('statTemp').textContent=lastTemp.toFixed(0)+'°C';
+  if(s('statHum'))  s('statHum').textContent=lastHum.toFixed(0)+'%';
+  if(s('statNet'))  s('statNet').textContent=(Math.random()*85+5).toFixed(1)+' Mb/s';
+  if(s('statPow'))  s('statPow').textContent=Math.round(180+lastCpu*2.5+Math.random()*40)+' W';
+  if(s('statFan'))  s('statFan').textContent=Math.round(900+lastTemp*22)+' RPM';
+  const sec=Math.floor((Date.now()-startTime)/1000);
+  if(s('statUp')) s('statUp').textContent=`${String(Math.floor(sec/3600)).padStart(2,'0')}:${String(Math.floor((sec%3600)/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+  if(s('barLoad')) s('barLoad').style.width=Math.min(100,lastCpu)+'%';
+  if(s('barMem'))  s('barMem').style.width=Math.min(100,lastMem)+'%';
+  if(s('barTemp')) s('barTemp').style.width=Math.min(100,(lastTemp-20)*2)+'%';
+  if(s('barHum'))  s('barHum').style.width=Math.min(100,lastHum)+'%';
+  drawChart();
+}
+function startMonitor(){
+  if(monitorTimer) return;
+  resizeCanvas(); cpuData=[]; memData=[]; tempData=[];
+  for(let i=0;i<MAX_POINTS;i++) pushSample();
+  monitorTimer=setInterval(pushSample,800);
+}
+function stopMonitor(){ if(monitorTimer){ clearInterval(monitorTimer); monitorTimer=null } }
+
+/* ===== NETWORK ===== */
+var netCanvas=byId('netChart');
+var nctx=netCanvas?netCanvas.getContext('2d'):null;
+function resizeNet(){
+  if(!netCanvas||!nctx) return;
+  const dpr=window.devicePixelRatio||1, rect=netCanvas.getBoundingClientRect();
+  if(rect.width===0) return;
+  netCanvas.width=rect.width*dpr; netCanvas.height=rect.height*dpr;
+  nctx.setTransform(dpr,0,0,dpr,0,0); drawNet();
+}
+function drawNet(){
+  if(!netCanvas||!nctx) return;
+  const rect=netCanvas.getBoundingClientRect(), W=rect.width, H=rect.height;
+  if(W===0) return;
+  nctx.clearRect(0,0,W,H);
+  nctx.strokeStyle='rgba(0,229,255,0.08)'; nctx.lineWidth=1;
+  for(let i=1;i<4;i++){ const y=(H/4)*i; nctx.beginPath(); nctx.moveTo(0,y); nctx.lineTo(W,y); nctx.stroke() }
+  if(netDownData.length<2) return;
+  const stepX=W/(NET_MAX-1), toY=v=>H-(v/100)*H;
+  function line(data,color){
+    nctx.beginPath();
+    data.forEach((v,i)=>{ const x=i*stepX,y=toY(v); i===0?nctx.moveTo(x,y):nctx.lineTo(x,y) });
+    nctx.strokeStyle=color; nctx.lineWidth=2; nctx.shadowColor=color; nctx.shadowBlur=6;
+    nctx.stroke(); nctx.shadowBlur=0;
+  }
+  line(netUpData,'#29ff9b');
+  line(netDownData,'#00e5ff');
+}
+function renderNetNodes(){
+  const list=byId('netNodeList'); if(!list) return;
+  list.innerHTML='';
+  vaultData.nodes.forEach(n=>{
+    const ping=Math.round(15+Math.random()*120);
+    const off=ping>100?'off':'';
+    const cls=ping<50?'good':ping<100?'mid':'bad';
+    const el=document.createElement('div');
+    el.className='net-node';
+    el.innerHTML=`<span class="name">${esc(n.title)}</span><span class="ping ${cls}">${ping} ms</span><span class="status ${off}">${off?'OFFLINE':'ONLINE'}</span>`;
+    list.appendChild(el);
+  });
+}
+function netTick(){
+  lastNetDown=walk(lastNetDown,10,95,20);
+  lastNetUp=walk(lastNetUp,5,70,12);
+  netDownData.push(lastNetDown); netUpData.push(lastNetUp);
+  if(netDownData.length>NET_MAX) netDownData.shift();
+  if(netUpData.length>NET_MAX) netUpData.shift();
+  const s=id=>byId(id);
+  if(s('netDown')) s('netDown').textContent=lastNetDown.toFixed(1)+' Mb/s';
+  if(s('netUp'))   s('netUp').textContent=lastNetUp.toFixed(1)+' Mb/s';
+  if(s('netLat'))  s('netLat').textContent=Math.round(8+Math.random()*30)+' ms';
+  if(s('ipLocal')) s('ipLocal').textContent='192.168.'+Math.round(Math.random()*3)+'.'+Math.round(Math.random()*250+2);
+  drawNet();
+}
+function startNet(){
+  if(netTimer) return;
+  resizeNet(); netDownData=[]; netUpData=[];
+  for(let i=0;i<NET_MAX;i++){
+    lastNetDown=walk(lastNetDown,10,95,20);
+    lastNetUp=walk(lastNetUp,5,70,12);
+    netDownData.push(lastNetDown); netUpData.push(lastNetUp);
+  }
+  netTick(); renderNetNodes();
+  netTimer=setInterval(()=>{ netTick(); renderNetNodes() },1200);
+}
+function stopNet(){ if(netTimer){ clearInterval(netTimer); netTimer=null } }
+
+/* ===== MAP 3D ===== */
+var mapCanvas=byId('map3d');
+var mctx=mapCanvas?mapCanvas.getContext('2d'):null;
+function resizeMap(){
+  if(!mapCanvas||!mctx) return;
+  const dpr=window.devicePixelRatio||1, rect=mapCanvas.getBoundingClientRect();
+  if(rect.width===0) return;
+  mapCanvas.width=rect.width*dpr; mapCanvas.height=rect.height*dpr;
+  mctx.setTransform(dpr,0,0,dpr,0,0); drawMap();
+}
+function project(x,y,z){
+  const ca=Math.cos(mapAngle), sa=Math.sin(mapAngle);
+  const x1=x*ca-z*sa, z1=x*sa+z*ca;
+  const cb=Math.cos(mapTilt), sb=Math.sin(mapTilt);
+  const y1=y*cb-z1*sb, z2=y*sb+z1*cb;
+  const d=8, scale=1/(1+z2/d);
+  return { x:x1*90*scale*mapZoom, y:y1*90*scale*mapZoom, z:z2 };
+}
+function shadeColor(hex,k){
+  const r=parseInt(hex.slice(1,3),16)*k|0;
+  const g=parseInt(hex.slice(3,5),16)*k|0;
+  const b=parseInt(hex.slice(5,7),16)*k|0;
+  return `rgb(${r},${g},${b})`;
+}
+function drawBox(cx,cy,cz,w,h,d,color,label){
+  if(!mapCanvas||!mctx) return;
+  const W=mapCanvas.getBoundingClientRect().width, H=mapCanvas.getBoundingClientRect().height;
+  const ox=W/2, oy=H/2+40;
+  const pts=[[-w/2,-h/2,-d/2],[w/2,-h/2,-d/2],[w/2,h/2,-d/2],[-w/2,h/2,-d/2],[-w/2,-h/2,d/2],[w/2,-h/2,d/2],[w/2,h/2,d/2],[-w/2,h/2,d/2]].map(([x,y,z])=>project(cx+x,cy+y,cz+z));
+  const faces=[
+    {idx:[0,1,2,3],shade:.55},{idx:[4,5,6,7],shade:.75},
+    {idx:[0,4,7,3],shade:.4},{idx:[1,5,6,2],shade:.7},
+    {idx:[3,2,6,7],shade:1},{idx:[0,1,5,4],shade:.3}
+  ];
+  faces.forEach(f=>f.avg=f.idx.reduce((s,i)=>s+pts[i].z,0)/4);
+  faces.sort((a,b)=>a.avg-b.avg);
+  faces.forEach(f=>{
+    const p0=pts[f.idx[0]],p1=pts[f.idx[1]],p2=pts[f.idx[2]],p3=pts[f.idx[3]];
+    mctx.beginPath();
+    mctx.moveTo(ox+p0.x,oy+p0.y); mctx.lineTo(ox+p1.x,oy+p1.y);
+    mctx.lineTo(ox+p2.x,oy+p2.y); mctx.lineTo(ox+p3.x,oy+p3.y);
+    mctx.closePath();
+    mctx.fillStyle=shadeColor(color,f.shade); mctx.fill();
+    mctx.strokeStyle='rgba(0,229,255,0.5)'; mctx.lineWidth=1; mctx.stroke();
+  });
+  const fc=project(cx,cy,cz+d/2+0.01);
+  if(ox+fc.x>-50 && ox+fc.x<W+50){
+    mctx.fillStyle='rgba(41,255,155,0.95)';
+    mctx.font='10px "SF Mono", monospace';
+    mctx.textAlign='center';
+    mctx.fillText('● '+label, ox+fc.x, oy+fc.y+4);
+  }
+}
+function drawMap(){
+  if(!mapCanvas||!mctx) return;
+  const W=mapCanvas.getBoundingClientRect().width, H=mapCanvas.getBoundingClientRect().height;
+  if(W===0) return;
+  mctx.fillStyle='#04070a'; mctx.fillRect(0,0,W,H);
+  const ox=W/2, oy=H/2+40;
+  mctx.strokeStyle='rgba(0,229,255,0.12)'; mctx.lineWidth=1;
+  const gs=7;
+  for(let i=-gs;i<=gs;i++){
+    const p1=project(i,1.6,-gs), p2=project(i,1.6,gs);
+    const p3=project(-gs,1.6,i), p4=project(gs,1.6,i);
+    mctx.beginPath(); mctx.moveTo(ox+p1.x,oy+p1.y); mctx.lineTo(ox+p2.x,oy+p2.y); mctx.stroke();
+    mctx.beginPath(); mctx.moveTo(ox+p3.x,oy+p3.y); mctx.lineTo(ox+p4.x,oy+p4.y); mctx.stroke();
+  }
+  const pos=[];
+  for(let r=0;r<2;r++) for(let c=0;c<5;c++) pos.push({x:(c-2)*1.1, y:0, z:(r-0.5)*1.6, label:'U'+String(r*5+c+1).padStart(2,'0')});
+  pos.sort((a,b)=>project(b.x,b.y,b.z).z-project(a.x,a.y,a.z).z);
+  pos.forEach(p=>drawBox(p.x,p.y,p.z,0.7,1.1,0.9,'#0a3a45',p.label));
+}
+function startMapLoop(){
+  if(mapLoop) return;
+  mapActive=true;
+  mapLoop=setInterval(()=>{ mapAngle+=0.005; drawMap() },40);
+}
+function stopMapLoop(){
+  mapActive=false;
+  if(mapLoop){ clearInterval(mapLoop); mapLoop=null }
+}
+
+if(mapCanvas){
+  mapCanvas.addEventListener('mousedown',e=>{ dragging=true; lastX=e.clientX; lastY=e.clientY; stopMapLoop() });
+  mapCanvas.addEventListener('wheel',e=>{
+    e.preventDefault();
+    mapZoom=Math.max(0.4,Math.min(2.5,mapZoom-e.deltaY*0.001));
+    drawMap();
+  },{passive:false});
+  mapCanvas.addEventListener('touchstart',e=>{
+    if(e.touches.length===1){
+      dragging=true; lastX=e.touches[0].clientX; lastY=e.touches[0].clientY; stopMapLoop();
+    } else if(e.touches.length===2){
+      lastTouchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+    }
+  },{passive:true});
+  mapCanvas.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    if(e.touches.length===1 && dragging){
+      const dx=e.touches[0].clientX-lastX, dy=e.touches[0].clientY-lastY;
+      lastX=e.touches[0].clientX; lastY=e.touches[0].clientY;
+      mapAngle+=dx*0.01;
+      mapTilt=Math.max(-0.5,Math.min(1.2,mapTilt+dy*0.005));
+      drawMap();
+    } else if(e.touches.length===2){
+      const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      mapZoom=Math.max(0.4,Math.min(2.5,mapZoom+(d-lastTouchDist)*0.005));
+      lastTouchDist=d; drawMap();
+    }
+  },{passive:false});
+  mapCanvas.addEventListener('touchend',()=>{ dragging=false; startMapLoop() });
+}
+window.addEventListener('mousemove',e=>{
+  if(!dragging) return;
+  const dx=e.clientX-lastX, dy=e.clientY-lastY;
+  lastX=e.clientX; lastY=e.clientY;
+  mapAngle+=dx*0.01;
+  mapTilt=Math.max(-0.5,Math.min(1.2,mapTilt+dy*0.005));
+  drawMap();
+});
+window.addEventListener('mouseup',()=>{ if(dragging){ dragging=false; startMapLoop() } });
+window.addEventListener('resize',()=>{ resizeCanvas(); resizeNet(); resizeMap() });
+
+/* ===== ENCRYPTION TOOL ===== */
+const METHODS = [
+  // Encoding
+  {id:'base64',name:'Base64',enc:s=>btoa(unescape(encodeURIComponent(s))),dec:s=>decodeURIComponent(escape(atob(s)))},
+  {id:'base64url',name:'Base64 URL-safe',enc:s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),dec:s=>decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-s.length%4)%4))))},
+  {id:'hex',name:'Hexadecimal',enc:s=>Array.from(new TextEncoder().encode(s)).map(b=>b.toString(16).padStart(2,'0')).join(''),dec:s=>new TextDecoder().decode(new Uint8Array(s.match(/.{1,2}/g).map(h=>parseInt(h,16))))},
+  {id:'binary',name:'Binary',enc:s=>Array.from(new TextEncoder().encode(s)).map(b=>b.toString(2).padStart(8,'0')).join(' '),dec:s=>new TextDecoder().decode(new Uint8Array(s.split(/\s+/).map(b=>parseInt(b,2))))},
+  {id:'octal',name:'Octal',enc:s=>Array.from(new TextEncoder().encode(s)).map(b=>b.toString(8)).join(' '),dec:s=>new TextDecoder().decode(new Uint8Array(s.split(/\s+/).map(o=>parseInt(o,8))))},
+  {id:'decimal',name:'Decimal',enc:s=>Array.from(new TextEncoder().encode(s)).join(' '),dec:s=>new TextDecoder().decode(new Uint8Array(s.split(/\s+/).map(d=>parseInt(d,10))))},
+  {id:'url',name:'URL Encode',enc:s=>encodeURIComponent(s),dec:s=>decodeURIComponent(s)},
+  {id:'html',name:'HTML Entity',enc:s=>s.replace(/[\u00A0-\u9999<>&"']/g,c=>'&#'+c.charCodeAt(0)+';'),dec:s=>s.replace(/&#(\d+);/g,(m,c)=>String.fromCharCode(c))},
+  {id:'unicode',name:'Unicode Escape',enc:s=>Array.from(s).map(c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0')).join(''),dec:s=>s.replace(/\\u([0-9a-fA-F]{4})/g,(m,c)=>String.fromCharCode(parseInt(c,16)))},
+  {id:'rot13',name:'ROT13',enc:s=>s.replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<='Z'?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26)),dec:s=>s.replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<='Z'?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26))},
+  {id:'rot47',name:'ROT47',enc:s=>s.replace(/[!-~]/g,c=>String.fromCharCode(33+((c.charCodeAt(0)-33+14)%94))),dec:s=>s.replace(/[!-~]/g,c=>String.fromCharCode(33+((c.charCodeAt(0)-33+14)%94)))},
+  {id:'atbash',name:'Atbash',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode(219-c.charCodeAt(0))).replace(/[A-Z]/g,c=>String.fromCharCode(155-c.charCodeAt(0))),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode(219-c.charCodeAt(0))).replace(/[A-Z]/g,c=>String.fromCharCode(155-c.charCodeAt(0)))},
+  {id:'reverse',name:'Reverse Text',enc:s=>s.split('').reverse().join(''),dec:s=>s.split('').reverse().join('')},
+  {id:'upper',name:'Uppercase',enc:s=>s.toUpperCase(),dec:s=>s.toLowerCase()},
+  {id:'lower',name:'Lowercase',enc:s=>s.toLowerCase(),dec:s=>s.toUpperCase()},
+  {id:'morse',name:'Morse Code',enc:s=>{const M={A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',4:'....-',5:'.....',6:'-....',7:'--...',8:'---..',9:'----.',' ':'/'};return s.toUpperCase().split('').map(c=>M[c]||'').join(' ')},dec:s=>{const M={'.-':'A','-...':'B','-.-.':'C','-..':'D','.':'E','..-.':'F','--.':'G','....':'H','..':'I','.---':'J','-.-':'K','.-..':'L','--':'M','-.':'N','---':'O','.--.':'P','--.-':'Q','.-.':'R','...':'S','-':'T','..-':'U','...-':'V','.--':'W','-..-':'X','-.--':'Y','--..':'Z','-----':'0','.----':'1','..---':'2','...--':'3','....-':'4','.....':'5','-....':'6','--...':'7','---..':'8','----.':'9','/':' '};return s.split(' ').map(c=>M[c]||'').join('')}},
+  {id:'a1z26',name:'A1Z26',enc:s=>s.toUpperCase().replace(/[A-Z]/g,c=>c.charCodeAt(0)-64).replace(/\s/g,' ').split(' ').join('-'),dec:s=>s.split('-').map(n=>String.fromCharCode(parseInt(n,10)+64)).join('')},
+  {id:'bacon',name:'Bacon Cipher',enc:s=>s.toUpperCase().replace(/[A-Z]/g,c=>{const v=c.charCodeAt(0)-65;return v.toString(2).padStart(5,'0').replace(/0/g,'A').replace(/1/g,'B')}),dec:s=>s.replace(/[AB]{5}/g,m=>String.fromCharCode(parseInt(m.replace(/A/g,'0').replace(/B/g,'1'),2)+65))},
+  // Caesar shifts
+  {id:'caesar1',name:'Caesar +1',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+1)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+1)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+25)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+25)%26+65))},
+  {id:'caesar3',name:'Caesar +3',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+3)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+3)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+23)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+23)%26+65))},
+  {id:'caesar5',name:'Caesar +5',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+5)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+5)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+21)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+21)%26+65))},
+  {id:'caesar7',name:'Caesar +7',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+7)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+7)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+19)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+19)%26+65))},
+  {id:'caesar10',name:'Caesar +10',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+10)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+10)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+16)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+16)%26+65))},
+  {id:'caesar13',name:'Caesar +13 (ROT13)',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+13)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+13)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+13)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+13)%26+65))},
+  {id:'caesar15',name:'Caesar +15',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+15)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+15)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+11)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+11)%26+65))},
+  {id:'caesar20',name:'Caesar +20',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+20)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+20)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+6)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+6)%26+65))},
+  {id:'caesar25',name:'Caesar +25',enc:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+25)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+25)%26+65)),dec:s=>s.replace(/[a-z]/g,c=>String.fromCharCode((c.charCodeAt(0)-97+1)%26+97)).replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65+1)%26+65))},
+  {id:'ascii+1',name:'ASCII Shift +1',enc:s=>s.split('').map(c=>String.fromCharCode(c.charCodeAt(0)+1)).join(''),dec:s=>s.split('').map(c=>String.fromCharCode(c.charCodeAt(0)-1)).join('')},
+  {id:'ascii+5',name:'ASCII Shift +5',enc:s=>s.split('').map(c=>String.fromCharCode(c.charCodeAt(0)+5)).join(''),dec:s=>s.split('').map(c=>String.fromCharCode(c.charCodeAt(0)-5)).join('')},
+  {id:'ascii-1',name:'ASCII Shift -1',enc:s=>s.split('').map(c=>String.fromCharCode(c.charCodeAt(0)-1)).join(''),dec:s=>s.split('').map(c=>String.fromCharCode(c.charCodeAt(0)+1)).join('')},
+  {id:'char2ascii',name:'Char → ASCII',enc:s=>s.split('').map(c=>c.charCodeAt(0)).join(' '),dec:s=>s.split(/\s+/).map(n=>String.fromCharCode(parseInt(n,10))).join('')},
+  {id:'json',name:'JSON Escape',enc:s=>JSON.stringify(s).slice(1,-1),dec:s=>JSON.parse('"'+s.replace(/"/g,'\\"')+'"')},
+  {id:'sql',name:'SQL Escape',enc:s=>s.replace(/'/g,"''").replace(/\\/g,'\\\\'),dec:s=>s.replace(/\\\\/g,'\\').replace(/''/g,"'")},
+  {id:'shell',name:'Shell Escape',enc:s=>s.replace(/([\\$`"!])/g,'\\$1'),dec:s=>s.replace(/\\([\\$`"!])/g,'$1')},
+  {id:'bitflip',name:'Bit Flip',enc:s=>s.split('').map(c=>String.fromCharCode(255-c.charCodeAt(0))).join(''),dec:s=>s.split('').map(c=>String.fromCharCode(255-c.charCodeAt(0))).join('')},
+  {id:'zerojoin',name:'Zero-Width Join',enc:s=>s.split('').join('\u200D'),dec:s=>s.split('\u200D').join('')},
+  {id:'charswap',name:'Char Swap (pairs)',enc:s=>s.replace(/(.)(.)/g,'$2$1'),dec:s=>s.replace(/(.)(.)/g,'$2$1')},
+  {id:'keyboard',name:'Keyboard Shift',enc:s=>s.replace(/[a-z]/g,c=>{const k='qwertyuiopasdfghjklzxcvbnm';const i=k.indexOf(c);return i>=0?k[(i+1)%26]:c}),dec:s=>s.replace(/[a-z]/g,c=>{const k='qwertyuiopasdfghjklzxcvbnm';const i=k.indexOf(c);return i>=0?k[(i+25)%26]:c})},
+  {id:'upplow',name:'Upper-Lower Toggle',enc:s=>s.split('').map((c,i)=>i%2?c.toUpperCase():c.toLowerCase()).join(''),dec:s=>s.toLowerCase()},
+  {id:'spacedot',name:'Dot Spacer',enc:s=>s.split('').join('.'),dec:s=>s.split('.').join('')},
+  {id:'double',name:'Double Char',enc:s=>s.split('').map(c=>c+c).join(''),dec:s=>s.match(/../g).map(p=>p[0]).join('')},
+  {id:'triple',name:'Triple Char',enc:s=>s.split('').map(c=>c+c+c).join(''),dec:s=>s.match(/.../g).map(p=>p[0]).join('')}
+];
+
+function initEncMethods(){
+  const sel=byId('encMethod'); if(!sel) return;
+  sel.innerHTML='';
+  METHODS.forEach(m=>{
+    const o=document.createElement('option');
+    o.value=m.id; o.textContent=m.name;
+    sel.appendChild(o);
+  });
+}
+
+function encAction(mode){
+  const sel=byId('encMethod'), inp=byId('encInput'), out=byId('encOutput'), info=byId('encInfo');
+  if(!sel||!inp||!out) return;
+  const m=METHODS.find(x=>x.id===sel.value);
+  if(!m){ out.value='Metode tidak ditemukan'; return }
+  const txt=inp.value;
+  if(!txt){ out.value=''; info.textContent='Input kosong.'; return }
+  try{
+    out.value = mode==='enc' ? m.enc(txt) : m.dec(txt);
+    info.textContent = `✓ ${mode==='enc'?'Encode':'Decode'} pakai ${m.name} berhasil.`;
+  }catch(e){
+    out.value='';
+    info.textContent = `✗ Error: ${e.message} (pastikan input valid buat metode ini)`;
+  }
+}
+const encE=byId('encEncode'); if(encE) encE.addEventListener('click',()=>encAction('enc'));
+const encD=byId('encDecode'); if(encD) encD.addEventListener('click',()=>encAction('dec'));
+const encS=byId('encSwap'); if(encS) encS.addEventListener('click',()=>{
+  const inp=byId('encInput'), out=byId('encOutput');
+  if(!inp||!out) return;
+  const t=inp.value; inp.value=out.value; out.value=t;
+});
+const encC=byId('encCopy'); if(encC) encC.addEventListener('click',()=>{
+  const out=byId('encOutput'); if(!out) return;
+  navigator.clipboard.writeText(out.value).then(()=>{
+    const info=byId('encInfo'); info.textContent='✓ Output disalin ke clipboard.';
+  }).catch(()=>{ const info=byId('encInfo'); info.textContent='✗ Gagal copy.' });
+});
+const encClr=byId('encClear'); if(encClr) encClr.addEventListener('click',()=>{
+  const i=byId('encInput'), o=byId('encOutput'), info=byId('encInfo');
+  if(i) i.value=''; if(o) o.value=''; if(info) info.textContent='Dibersihkan.';
+});
+
+/* ===== NOTES ===== */
+let currentNoteId = null;
+
+function renderNotes(){
+  const cont=byId('notesContainer'); if(!cont) return;
+  cont.innerHTML='';
+  if(!vaultData.notes || vaultData.notes.length===0){
+    cont.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:11px;letter-spacing:1px;">Belum ada catatan. Klik + CATATAN BARU.</div>';
+    return;
+  }
+  vaultData.notes.forEach(n=>{
+    const el=document.createElement('div');
+    el.className='note-item';
+    el.dataset.nid=n.id;
+    const preview = (n.body||'').slice(0,50) || '—';
+    const imgCount = (n.images||[]).length;
+    const chkCount = (n.checklist||[]).filter(c=>c.done).length + '/' + (n.checklist||[]).length;
+    const badges = [];
+    if(chkCount !== '0/0') badges.push('✓ '+chkCount);
+    if(imgCount) badges.push('🖼 '+imgCount);
+    el.innerHTML=`
+      <div class="ni-ico"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+      <div class="ni-body">
+        <div class="ni-title">${esc(n.title||'Tanpa judul')}</div>
+        <div class="ni-preview">${esc(preview)}</div>
+      </div>
+      ${badges.length?'<span class="ni-badge">'+badges.join(' · ')+'</span>':''}
+    `;
+    el.addEventListener('click',()=>openNoteEditor(n.id));
+    cont.appendChild(el);
+  });
+}
+
+function openNoteEditor(nid){
+  currentNoteId = nid;
+  const n = vaultData.notes.find(x=>x.id===nid);
+  if(!n) return;
+  byId('noteTitle').value = n.title || '';
+  byId('noteBody').value = n.body || '';
+  renderNoteChecklist(n.checklist || []);
+  renderNoteImages(n.images || []);
+  byId('notesList').style.display='none';
+  byId('noteEditor').classList.add('show');
+}
+
+function closeNoteEditor(){
+  currentNoteId = null;
+  byId('noteEditor').classList.remove('show');
+  byId('notesList').style.display='block';
+}
+
+function renderNoteChecklist(items){
+  const cont=byId('noteChecklist'); if(!cont) return;
+  cont.innerHTML='';
+  items.forEach((item,idx)=>{
+    const el=document.createElement('div');
+    el.className='ne-check-item'+(item.done?' done':'');
+    el.innerHTML=`
+      <input type="checkbox" ${item.done?'checked':''} data-idx="${idx}">
+      <input class="chk-txt" type="text" value="${esc(item.text||'')}" data-idx="${idx}" placeholder="item...">
+      <span class="chk-del" data-idx="${idx}">✕</span>
+    `;
+    cont.appendChild(el);
+  });
+  cont.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      const n=vaultData.notes.find(x=>x.id===currentNoteId);
+      if(n && n.checklist) n.checklist[cb.dataset.idx].done = cb.checked;
+      const parent = cb.closest('.ne-check-item');
+      parent.classList.toggle('done', cb.checked);
+    });
+  });
+  cont.querySelectorAll('.chk-txt').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const n=vaultData.notes.find(x=>x.id===currentNoteId);
+      if(n && n.checklist) n.checklist[inp.dataset.idx].text = inp.value;
+    });
+  });
+  cont.querySelectorAll('.chk-del').forEach(del=>{
+    del.addEventListener('click',()=>{
+      const n=vaultData.notes.find(x=>x.id===currentNoteId);
+      if(n && n.checklist){
+        n.checklist.splice(del.dataset.idx,1);
+        renderNoteChecklist(n.checklist);
+      }
+    });
+  });
+}
+
+function renderNoteImages(imgs){
+  const cont=byId('noteImages'); if(!cont) return;
+  cont.innerHTML='';
+  imgs.forEach((img,idx)=>{
+    const el=document.createElement('div');
+    el.className='ne-image';
+    el.innerHTML=`<img src="${esc(img.data)}" alt="img${idx}"><div class="img-del" data-idx="${idx}">✕</div>`;
+    cont.appendChild(el);
+  });
+  cont.querySelectorAll('.img-del').forEach(d=>{
+    d.addEventListener('click',()=>{
+      const n=vaultData.notes.find(x=>x.id===currentNoteId);
+      if(n && n.images){
+        n.images.splice(d.dataset.idx,1);
+        renderNoteImages(n.images);
+      }
+    });
+  });
+  cont.querySelectorAll('img').forEach(img=>{
+    img.addEventListener('click',()=>{
+      window.open(img.src,'_blank');
+    });
+  });
+}
+
+const nNew=byId('noteNew');
+if(nNew) nNew.addEventListener('click',()=>{
+  const id='n'+Date.now();
+  if(!vaultData.notes) vaultData.notes=[];
+  vaultData.notes.push({id,title:'Catatan Baru',body:'',checklist:[],images:[],created:Date.now()});
+  renderNotes();
+  openNoteEditor(id);
+});
+const nBack=byId('noteBack');
+if(nBack) nBack.addEventListener('click',()=>{
+  saveCurrentNote().then(()=>{ closeNoteEditor(); });
+});
+const nSave=byId('noteSave');
+if(nSave) nSave.addEventListener('click',async()=>{
+  await saveCurrentNote();
+  alert('✓ Catatan disimpan (terenkripsi)');
+});
+const nDel=byId('noteDelete');
+if(nDel) nDel.addEventListener('click',async()=>{
+  if(!currentNoteId) return;
+  if(!confirm('Hapus catatan ini?')) return;
+  vaultData.notes = vaultData.notes.filter(n=>n.id!==currentNoteId);
+  await saveVault();
+  closeNoteEditor();
+  renderNotes();
+});
+
+async function saveCurrentNote(){
+  if(!currentNoteId) return;
+  const n=vaultData.notes.find(x=>x.id===currentNoteId);
+  if(!n) return;
+  n.title = byId('noteTitle').value;
+  n.body = byId('noteBody').value;
+  n.updated = Date.now();
+  await saveVault();
+  renderNotes();
+}
+
+const nAddChk=byId('noteAddCheck');
+if(nAddChk) nAddChk.addEventListener('click',()=>{
+  const n=vaultData.notes.find(x=>x.id===currentNoteId);
+  if(!n) return;
+  if(!n.checklist) n.checklist=[];
+  n.checklist.push({text:'',done:false});
+  renderNoteChecklist(n.checklist);
+});
+
+const nImgUpload=byId('noteImgUpload');
+const nFileInput=byId('noteFileInput');
+if(nImgUpload && nFileInput){
+  nImgUpload.addEventListener('click',()=>nFileInput.click());
+  nFileInput.addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const reader=new FileReader();
+    reader.onload=async ev=>{
+      const img = await compressImage(ev.target.result);
+      const n=vaultData.notes.find(x=>x.id===currentNoteId);
+      if(!n) return;
+      if(!n.images) n.images=[];
+      n.images.push({data:img,name:f.name,ts:Date.now()});
+      renderNoteImages(n.images);
+      nFileInput.value='';
+    };
+    reader.readAsDataURL(f);
+  });
+}
+
+const nImgUrl=byId('noteImgUrl');
+if(nImgUrl) nImgUrl.addEventListener('click',async()=>{
+  const url = prompt('Masukkan URL gambar:');
+  if(!url) return;
+  const n=vaultData.notes.find(x=>x.id===currentNoteId);
+  if(!n) return;
+  if(!n.images) n.images=[];
+  n.images.push({data:url,name:'URL',ts:Date.now()});
+  renderNoteImages(n.images);
+});
+
+function compressImage(dataUrl){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const max=800;
+      let w=img.width,h=img.height;
+      if(w>max||h>max){
+        if(w>h){ h=Math.round(h*max/w); w=max }
+        else { w=Math.round(w*max/h); h=max }
+      }
+      const c=document.createElement('canvas');
+      c.width=w; c.height=h;
+      const cx=c.getContext('2d');
+      cx.drawImage(img,0,0,w,h);
+      resolve(c.toDataURL('image/jpeg',0.7));
+    };
+    img.src=dataUrl;
+  });
+}
+
+/* ===== CONSOLE SETTINGS ===== */
+function loadConsoleSettings(){
+  const s=id=>byId(id);
+  if(s('autoLockMin')) s('autoLockMin').value=lsGet(LS.autoLock,'2');
+}
+
+const bln=byId('btnLockNow');
+if(bln) bln.addEventListener('click',()=>lockNow());
+
+const bsal=byId('btnSaveAutoLock');
+if(bsal) bsal.addEventListener('click',()=>{
+  const n=parseInt(byId('autoLockMin').value.trim(),10);
+  if(isNaN(n)||n<0){ alert('Angka tidak valid'); return }
+  lsSet(LS.autoLock,String(n));
+  startAutoLock();
+  alert('✓ Auto-lock: '+(n===0?'off':n+' menit'));
+});
+
+const bsp=byId('btnSavePw');
+if(bsp) bsp.addEventListener('click',async()=>{
+  const oldPw=byId('pwOld').value.trim();
+  const newPw=byId('pwNew').value.trim();
+  if(newPw.length<3||!/^\d+$/.test(newPw)){ alert('PIN baru minimal 3 digit, angka saja'); return }
+  const oh=await hashStr('ARK_'+oldPw);
+  if(oh!==lsGet(LS.pinHash,'')){ alert('✗ PIN lama salah'); return }
+  try{
+    // Re-encrypt first so a storage failure does not leave the vault inaccessible.
+    const enc=await encryptData(vaultData,newPw);
+    lsSet(LS.vault,JSON.stringify(enc));
+    const nh=await hashStr('ARK_'+newPw);
+    lsSet(LS.pinHash,nh);
+    currentPin=newPw;
+    byId('pwOld').value=''; byId('pwNew').value='';
+    alert('✓ PIN diperbarui. Data di-re-encrypt dengan PIN baru.');
+  }catch(e){
+    alert('✗ Gagal memperbarui PIN. Data lama tetap dipertahankan.');
+  }
+});
+
+function loadSecurityInfo(){
+  const s=id=>byId(id);
+  if(s('loginCount')) s('loginCount').textContent=lsGet(LS.loginCount,'0')+'x';
+  if(s('lastLogin'))  s('lastLogin').textContent=lsGet(LS.lastLogin,'—');
+  if(s('failCount'))  s('failCount').textContent=lsGet(LS.failCount,'0')+'x';
+}
+
+/* ===== AUTO-LOCK ===== */
+function startAutoLock(){
+  stopAutoLock();
+  const m=parseInt(lsGet(LS.autoLock,'2'),10)||0;
+  if(m<=0) return;
+  resetIdle(m);
+  if(!window._idleHandler){
+    window._idleHandler=()=>{
+      const mw=byId('mainWrap'), ls=byId('lockScreen');
+      if(mw && mw.style.display!=='none' && ls && !ls.classList.contains('show')){
+        resetIdle(parseInt(lsGet(LS.autoLock,'2'),10)||0);
+      }
+    };
+    ['click','touchstart','keydown'].forEach(ev=>window.addEventListener(ev,window._idleHandler));
+  }
+}
+function resetIdle(m){
+  if(autoLockTimer){ clearTimeout(autoLockTimer); autoLockTimer=null }
+  if(!m||m<1) return;
+  autoLockTimer=setTimeout(()=>lockNow(), m*60*1000);
+}
+function stopAutoLock(){ if(autoLockTimer){ clearTimeout(autoLockTimer); autoLockTimer=null } }
+
+async function lockNow(){
+  if(unlocked) await saveVault();
+  unlocked = false;
+  currentPin = '';
+  stopAutoLock();
+  stopMonitor(); stopNet(); stopMapLoop();
+  Object.keys(panels).forEach(k=>{
+    if(panels[k]) panels[k].classList.remove('open');
+    if(toolBtns[k]) toolBtns[k].classList.remove('active');
+  });
+  const lk=byId('lockScreen'), mw=byId('mainWrap');
+  if(lk) lk.classList.add('show');
+  if(mw) mw.style.display='none';
+  circleClicked=false;
+  const np=byId('numpad'); if(np) np.classList.remove('show');
+  renderDots(0);
+  const st=byId('lockStatusText');
+  if(st){ st.textContent='TAP TO UNLOCK'; st.classList.remove('red') }
+  const forgot=byId('forgotLink'); if(forgot) forgot.classList.remove('show');
+  updateLockClock();
+}
+
+/* ===== RECOVERY ===== */
+let recoveryStage=0;
+const fl=byId('forgotLink');
+if(fl) fl.addEventListener('click',()=>{
+  if(lockedUntil>Date.now()) return;
+  recoveryStage=0;
+  const rd=byId('recoveryDesc');
+  if(rd) rd.textContent=lsGet(LS.question,'—');
+  const conf=byId('btnConfirmRecovery');
+  if(conf) conf.textContent='LANJUT';
+  const ra=byId('recoveryAnswer'); if(ra) ra.value='';
+  const rn=byId('recoveryNewPin'); if(rn) rn.value='';
+  const nr=byId('newPinRow'); if(nr) nr.style.display='none';
+  const rm=byId('recoveryModal'); if(rm) rm.classList.add('show');
+});
+
+const bcr=byId('btnCancelRecovery');
+if(bcr) bcr.addEventListener('click',()=>{
+  const rm=byId('recoveryModal'); if(rm) rm.classList.remove('show');
+  recoveryStage=0;
+});
+
+const bcfr=byId('btnConfirmRecovery');
+if(bcfr) bcfr.addEventListener('click',async()=>{
+  if(recoveryStage===0){
+    const ans=byId('recoveryAnswer').value.trim().toLowerCase();
+    const ah=await hashStr('ARK_'+ans);
+    if(ah===lsGet(LS.answerHash,'')){
+      byId('recoveryDesc').textContent='✓ Jawaban benar. Buat PIN baru:';
+      byId('newPinRow').style.display='flex';
+      byId('btnConfirmRecovery').textContent='SIMPAN PIN';
+      recoveryStage=1;
+    } else {
+      byId('recoveryDesc').textContent='✗ Jawaban salah. Coba lagi:';
+    }
+  } else {
+    const np=byId('recoveryNewPin').value.trim();
+    if(np.length<3||!/^\d+$/.test(np)){
+      byId('recoveryDesc').textContent='PIN minimal 3 digit, angka saja.';
+      return;
+    }
+    const nh=await hashStr('ARK_'+np);
+    lsSet(LS.pinHash,nh);
+    lsSet(LS.failCount,'0');
+    byId('recoveryModal').classList.remove('show');
+    byId('forgotLink').classList.remove('show');
+    alert('✓ PIN berhasil diganti. Data lama tidak bisa didekripsi dengan PIN baru — silakan unlock dengan PIN baru (data akan di-reset).');
+    recoveryStage=0;
+  }
+});
+
+/* ===== ADD NODE ===== */
+const anb=byId('addNodeBtn');
+if(anb) anb.addEventListener('click',()=>{
+  const af=byId('addForm');
+  if(af) af.classList.toggle('show');
+  if(af&&af.classList.contains('show')) byId('addName').focus();
+});
+const ac=byId('addCancel');
+if(ac) ac.addEventListener('click',()=>{
+  const af=byId('addForm'); if(af) af.classList.remove('show');
+  ['addName','addDesc','addUrl'].forEach(id=>{ const e=byId(id); if(e) e.value='' });
+});
+const as=byId('addSave');
+if(as) as.addEventListener('click',async()=>{
+  let name=byId('addName').value.trim();
+  let desc=byId('addDesc').value.trim()||'custom node';
+  let url=byId('addUrl').value.trim();
+  if(!name){ alert('Nama kosong'); return }
+  if(!url){ alert('URL kosong'); return }
+  if(!/^https?:\/\//i.test(url)) url='https://'+url;
+  try{
+    const parsed=new URL(url);
+    if(!/^https?:$/.test(parsed.protocol)){ alert('URL hanya boleh http atau https'); return }
+    url=parsed.href;
+  }catch(e){ alert('URL tidak valid'); return }
+  vaultData.nodes.push({id:'custom-'+Date.now(),title:name,desc:desc,url:url,status:'ONLINE',custom:true});
+  await saveVault();
+  renderNodes(); renderNetNodes();
+  ['addName','addDesc','addUrl'].forEach(id=>{ const e=byId(id); if(e) e.value='' });
+  byId('addForm').classList.remove('show');
+});
+
+/* ===== BACKUP & RESTORE ===== */
+const bBak=byId('btnBackup');
+if(bBak) bBak.addEventListener('click',()=>{
+  const raw=lsGet(LS.vault,'');
+  if(!raw){ alert('Belum ada data untuk di-backup'); return }
+  const blob=new Blob([raw],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`ark_vault_${new Date().toISOString().slice(0,10)}.ark`;
+  a.click();
+});
+const bRes=byId('btnRestore');
+const rFile=byId('restoreFile');
+if(bRes && rFile){
+  bRes.addEventListener('click',()=>rFile.click());
+  rFile.addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{
+        const j=JSON.parse(ev.target.result);
+        if(j.salt && j.iv && j.data){
+          lsSet(LS.vault, JSON.stringify(j));
+          alert('✓ Vault direstore. Silakan unlock dengan PIN yang sesuai.');
+          location.reload();
+        } else { alert('Format file tidak valid'); }
+      }catch(err){ alert('Gagal membaca file'); }
+    };
+    r.readAsText(f);
+  });
+}
+
+/* ===== RESET DATA ===== */
+const btnConfirmReset=byId('btnConfirmReset');
+let resetCountdown=null;
+const br=byId('btnReset');
+if(br) br.addEventListener('click',()=>{
+  byId('resetModal').classList.add('show');
+  let t=5;
+  if(btnConfirmReset){ btnConfirmReset.disabled=true; btnConfirmReset.textContent=`SETUJU (${t})` }
+  clearInterval(resetCountdown);
+  resetCountdown=setInterval(()=>{
+    t--;
+    if(t<=0){
+      clearInterval(resetCountdown);
+      if(btnConfirmReset){ btnConfirmReset.disabled=false; btnConfirmReset.textContent='SETUJU' }
+    } else {
+      if(btnConfirmReset) btnConfirmReset.textContent=`SETUJU (${t})`;
+    }
+  },1000);
+});
+const bcr2=byId('btnCancelReset');
+if(bcr2) bcr2.addEventListener('click',()=>{
+  byId('resetModal').classList.remove('show');
+  clearInterval(resetCountdown);
+  if(btnConfirmReset){ btnConfirmReset.disabled=true; btnConfirmReset.textContent='SETUJU (5)' }
+});
+if(btnConfirmReset) btnConfirmReset.addEventListener('click',()=>{
+  try{ Object.values(LS).forEach(k=>localStorage.removeItem(k)) }catch(e){}
+  location.reload();
+});
+
+/* ===== INIT ===== */
+initEncMethods();
+initLock();
+</script>
+</body>
+</html>
